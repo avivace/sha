@@ -1,4 +1,13 @@
+# LaTeX robbe
 *.aux
 *.log
 *.toc
 *.pdf
+
+# Python3 Virtual Environment folders
+bin/
+lib/
+lib64/
+lib64
+share/
+pyvenv.cfg

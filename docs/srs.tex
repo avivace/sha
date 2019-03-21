@@ -161,7 +161,26 @@ Particolare tipologia di utente registrato a cui vengono concessi oltre alle car
 
 
 \section{General Constraints}
+
+Attualmente non ci sono particolari vincoli hardware o altre limitazioni, eventualmente le aggiungeremo qui.
+
+
+
 \section{Assumptions \& Dependencies}
+
+\begin{itemize}
+	\item Dal momento che il prodotto Smart Home Automation si propone come un sistema di controllo domotico integrabile in hardware all’interno di un impianto già esistente senza eccessive modifiche, assumiamo come base di partenza che l’impianto all’interno del quale il prodotto si andrà a collocare rispetti le normative vigenti relative ai criteri progettuali di impianti elettrici per abitazioni civili, i cui dettagli possono essere consultati più nel dettaglio nell’articolo 21 della norma CEI 64-8, attraverso cui sarà possibile garantire:
+	\begin{itemize}
+		\item Flessibilità nel tempo: Ovvero la facilità d’adeguamento dell’installazione alle mutevoli esigenze abitative ed organizzative.
+		\item Sicurezza ambientale: Intesa come protezione di persone e cose che in qualche modo interagiscono con l’ambiente in piena coerenza con la norma CEI 64-8.
+
+	\end{itemize}
+	Il rispetto di almeno questi due aspetti riveste un ruolo fondamentale affinché il prodotto SHA possa essere integrato all’interno dell’impianto già esistente, garantendone il corretto funzionamento.
+	\item Assumiamo che in prossimità del punto di installazione, vi sia la possibilità di connettere l’unità di controllo centrale del sistema ad internet attraverso una connessione a banda larga, via cavo Ethernet (RJ45) oppure tramite connettività Wi-Fi (802.11 a/b/g/n/ac).
+	\item  Per usufruire delle funzionalità di controllo vocale, si assume che l’utilizzatore finale disponga di almeno un dispositivo della famiglia Echo di Amazon o alternative compatibili, dotate dell’assistente vocale Alexa, oppure in alternativa di un dispositivo della famiglia Home di Google.
+
+\end{itemize}
+
 \section{Apportoning of requirements}
 \chapter{Specific Requirements}
 \section{Functional requirements}

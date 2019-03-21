@@ -1,4 +1,5 @@
 \documentclass[12pt,a4paper]{report}
+\renewcommand{\familydefault}{\sfdefault}
 
 \begin{document}
 \title{%
@@ -23,15 +24,142 @@
 
 
 \chapter{Introduction}
+
 \section{RD purpose}
+L’obiettivo del seguente documento è quello di presentare una descrizione dettagliata del sistema di controllo domotico denominato “Smart Home Automation”. Saranno trattate le caratteristiche, le interfacce, le funzionalità e gli scopi del progetto, senza però tralasciare aspetti altrettanto importanti come vincoli e rischi, legati in modo diretto o indiretto al prodotto software di cui sopra.
+
+Sono interessati a questo documento:
+
+\begin{itemize}
+\item \textbf{I membri del team di sviluppo}. Le persone che lavorano sul progetto e ne sono direttamente coinvolte nello sviluppo.
+\item \textbf{(Stakeholders) Dirigenti, dipendenti}. Individui ed entità non coinvolti nel progetto ma che lo influenzano.
+\end{itemize}
 \section{Product Scope}
+Lo scopo principale del prodotto \textit{Smart Home Automation} è la realizzazione di una soluzione hardware/software in grado di implementare un sistema di controllo domotico di livello tre, ovvero quella tipologia di sistemi domotici caratterizzati da una medio-elevata complessità, aventi come obiettivo principale una perfetta ed efficace integrazione tra i diversi impianti di cui un’abitazione si costituisce, tra cui possiamo sicuramente annoverare:
+\begin{itemize}
+\item Impianto Elettrico
+\item Impianto Riscaldamento
+\item Impianto Idraulico
+\item Sicurezza
+\end{itemize}
+Il Prodotto si caratterizza inoltre per un basso impatto economico in termini di componentistica richiesta per la realizzazione, senza per questo risultare limitante nelle funzionalità offerte, rispetto a soluzioni analoghe e più blasonate già presenti sul mercato.
+
+In particolare, Smart Home Automation deve:
+
+\begin{enumerate}
+\item Pilotare in modo sicuro ed affidabile un impianto elettrico, comandandone attuatori ed elettrodomestici collegati;
+\item Leggere e sfruttare i dati della sensoristica collegata all’impianto elettrico, intraprendendo azioni in base alle rilevazioni o a condizioni rivelate da queste metriche.
+\item Esporre il controllo sulla funzionalità 1 tramite un’interfaccia (API base?), rendendo accessibile con un’applicazione utente:
+\begin{enumerate}
+\item l’utilizzo del sistema;
+\item la sua configurazione;
+\item l’abilitazione o disabilitazione delle singole funzionalità.
+\end{enumerate}
+\item Registrare ed esporre all’utente uno storico di 2.
+\end{enumerate}
+
 \section{Definitions, acronyms, abbreviations}
+
+\begin{table}[]
+\begin{tabular}{| l | p{10cm} | }
+\hline
+Acronimo & Significato\\
+\hline                                                                               
+SHA      & Smart Home Automation, denominazione del progetto                                         \\
+CEI 64-8 & Normativa di riferimento per quanto riguarda gli impianti elettrici per abitazioni civili \\
+\hline
+\end{tabular}
+\end{table}
+
 \section{References}
 \section{Overview}
+
+Il presente documento come già detto costituisce una puntuale analisi del prodotto SHA, dapprima verrà fornita una descrizione ad alto livello delle sue componenti e delle funzionalità, successivamente verranno esposti i dettagli relativi al contesto applicativo entro cui il prodotto si troverà a dover operare. A seguire attraverso un’analisi più accurata verranno presentati i requisiti che il sistema dovrà soddisfare, discutendo infine possibili scenari di sviluppo futuri, grazie ai quali sarà possibile estendere il ciclo di vita del prodotto software.
+
+Di seguito una breve anticipazione sul focus di ciascuno dei capitoli presenti nel seguente documento di specifica dei requisiti:
+
+\begin{itemize}
+\item{}Capitolo 1. Illustra lo scopo del prodotto e del presente documento, le definizioni e gli acronimi utilizzati a cui si farà riferimento nel prosieguo del documento.
+
+\item{}Capitolo 2. Contiene una generica descrizione delle funzionalità fornite dal sistema e dei vantaggi che il suo utilizzo può comportare per l’utilizzatore finale. Verranno inoltre definiti alcuni vincoli ed assunzioni relative ad ambiente e prodotto.
+
+\item{}Capitolo 3. Fornisce una specifica il più possibile dettagliata dei requisiti funzionali e non funzionali organizzati per tipologia di utente. Verranno inoltre riportati modello di dominio, diagrammi dei casi d’uso, diagrammi di sequenza e diagrammi di stato relativi alle funzionalità più significative e complesse, al fine di fornire allo sviluppatore e agli stakeholder una visione il più possibile accurata della funzionalità offerte.
+\end{itemize}
+
+
+
 \chapter{General Description}
 \section{Product Perspective}
+Smart Home Automation si propone come un sistema di controllo domotico integrato, in grado di offrire numerose funzionalità,t finalizzate a semplificare e ad ottimizzare attività quotidiane e/o di gestione efficiente dell’energia elettrica, integrabile all’interno di un impianto elettrico già esistente e quindi facilmente adattabile anche all’interno di impianti di non recentissima realizzazione, rivolgendosi conseguentemente ad un pubblico di clienti potenzialmente molto vasto. Il prodotto risulta quindi particolarmente allettante per tutte quelle persone che necessitano di rendere Smart i propri ambienti domestici o di lavoro, dando vita ad un ambiente all’interno del quale si possono comandare a distanza i vari dispositivi della casa, dagli elettrodomestici agli allarmi, dal sistema di riscaldamento a quello di illuminazione.
+
+
+Il tutto si traduce quindi in una serie di indubbi vantaggi, i quali verranno di seguito sintetizzati:
+\begin{itemize}
+
+\item Risparmio sui consumi
+\item Gestione a distanza
+\item Semplicità di utilizzo
+\item Flessibilità
+\item Qualità della vita
+
+\end{itemize}
+Di seguito vengono riportati maggiori dettagli per ognuno dei vantaggi indicati.
+
+\subsection{Risparmio sui Consumi}
+Sicuramente il principale vantaggio di una casa Smart risiede in un notevole risparmio energetico, il quale si traduce in un risparmio anche economico. Un controllo intelligente delle diverse fonti energetiche, infatti, permette di limitare gli sprechi e ottimizzare le performance degli impianti, riducendo così i costi finali di una percentuale che si stima possa variare tra il 20 ed il 30 per cento. È inoltre dimostrato che la visualizzazione dei consumi o la generazione automatica di informazioni relative al funzionamento di un particolare impianto della casa (Es. Riscaldamento), rendono l’utilizzatore più attento e meglio predisposto a modificare le proprie abitudini al fine di ottenere un risparmio economico grazie alle migliori performance erogate dal proprio impianto.
+
+\subsection{Gestione a distanza}
+Grazie al controllo remoto, gli accessori Smart possono essere gestiti anche quando non si è presenti in casa, semplicemente connettendosi a internet, impartendo ordini a distanza. Questo significa non solo avere il controllo di quanto avviene in casa in ogni momento, ma anche intervenire per creare le migliori condizioni possibili.
+
+\subsection{Semplicità di utilizzo}
+Se in passato i dispositivi domotici erano spesso molto complicati da configurare e utilizzare, oggi si caratterizzano per un’interfaccia user friendly, semplice e intuitiva, il che li rende facilmente usufruibili anche da utenti meno esperti e dagli anziani.
+
+\subsection{Flessibilità}
+Altra peculiarità dei sistemi domotici è la possibilità di poter essere modificati e soprattutto ampliati nel corso del tempo, attraverso l’aggiunta di nuove componenti che possano creare un sistema personalizzato sulle base delle proprie necessità.
+
+\subsection{Qualità della vita}
+Scopo finale dell’automazione domestica è quello di migliorare la qualità della vita di chi occupa gli spazi casalinghi, rendendo la casa più confortevole e favorendo l’accessibilità e la fruizione dell’abitazione anche per chi è affetto da disabilità o per gli anziani.
+Ovviamente nonostante tutti questi aspetti positivi, rendere Smart la propria abitazione, renderla accessibile e controllabile sia dall’interno che dall’esterno, seppur previa autenticazione, apre a tutta una serie di problematiche relative alla sicurezza che non possono e non devono essere trascurate.
+Quindi in definitiva tra gli aspetti più critici di questa tipologia di sistemi possiamo annoverare:
+
+\begin{itemize}
+	\item Problematiche relative alla sicurezza e riservatezza delle informazioni
+	\item Maggiori componenti nell’impianto, comportano indubbiamente un’installazione più complessa
+
+\end{itemize}
+
+Aspetti che però Smart Home Automation tiene in forte considerazione, sul quale ci si focalizzerà nelle sezioni successive di questo documento.
+
+
 \section{Product functions}
+
+Smart Home Automation è in grado di offrire funzionalità Smart per quanto riguarda i principali impianti domestici, in particolare esse possono essere raccolte nelle seguenti macro-aree:
+
+\begin{itemize}
+\item Gestione Illuminazione
+\item Gestione Riscaldamento
+\item Gestione Antifurto
+\item Interfaccia unica di gestione via Web
+\item Interfacciamento con ecosistema Amazon Alexa e Google Home
+\end{itemize}
+
+Le funzionalità appartenenti alle categorie sopra riportate saranno accessibili solo agli utenti registrati al sistema ed utilizzabili previa autenticazione.
+
 \section{User characteristics}
+
+Per il sistema SHA sono stati previste tre tipologie di utenti:
+
+\subsection{Utente non registrato}
+Particolare tipologia di utente che identifica qualunque soggetto non ancora registrato nel database utenti del sistema di controllo domotico, in quanto tale, l’utente non può interagire con il sistema, eccetto che per effettuare la registrazione al sistema, registrazione che verrà successivamente sottoposta ad approvazione manuale da parte dell’amministratore.
+
+\subsection{Utente registrato}
+Utente già presente nel database del sistema di controllo domotico, in quanto tale, l’utente dopo essersi autenticato può usufruire senza alcuna limitazione alle funzionalità offerte dal sistema.
+
+\subsection{Utente amministratore}
+Particolare tipologia di utente registrato a cui vengono concessi oltre alle caratteristiche già citate per l’utente registrato standard, alcuni permessi di amministrazione e gestione aggiuntivi, legati in particolare all’approvazione/rifiuto delle registrazioni da parte degli utenti non ancora registrati.
+
+
+
 \section{General Constraints}
 \section{Assumptions \& Dependencies}
 \section{Apportoning of requirements}

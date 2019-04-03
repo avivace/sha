@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    {% for piano in piani %}
+        {% include '_piano.html' %}
+    {% endfor %}
+	<script>
+					
+		function accendi(topic) {
+  			alert("Luce accesa " + topic + '/0');
+			
+			fetch('/attuatore/' + topic + '/0').then(function(response) {
+					
+				response.json().then(function(data) {
+						alert("Funzione fatta");
+				});
+			});
+		};
+					
+		function spegni(topic) {
+  			alert("Luce spenta " + topic + '/1');
+			
+			fetch('/attuatore/' + topic + '/1').then(function(response) {
+					
+				response.json().then(function(data) {
+						
+				});
+			});
+		};
+	</script>
+{% endblock %}

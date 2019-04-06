@@ -79,7 +79,11 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=False)
+        numUtenti=User.query.count()
+        if numUtenti < 1:
+            user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=True)
+        else: 
+            user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=False)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()

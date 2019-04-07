@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    {% for user in users %}
+        {% include '_user.html' %}
+    {% endfor %}
+	<script>
+					
+		function accetta(username) {
+  			alert("Utente accettato " + username);
+			fetch('/accept_user/' + username).then(function(response) {
+					
+				response.json().then(function(data) {
+						alert(data.message);
+				});
+			});
+		};
+					
+		function rifiuta(username) {
+			alert("Utente rifiutato " + username);
+			fetch('/reject_user/' + username).then(function(response) {
+					
+				response.json().then(function(data) {
+						alert(data.message);
+				});
+			});
+		};
+	</script>
+{% endblock %}

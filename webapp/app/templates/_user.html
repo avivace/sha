@@ -1,0 +1,18 @@
+    <table class="table table-hover">
+        <tr>
+            <td width="70px">
+                    <img src="{{ user.avatar(70) }}" />
+            </td>
+            <td>
+                Username: {{ user.username }}
+                <br>
+                E-Mail: {{ user.email }}
+                <br>
+                Cellulare: {{ user.cellular }}
+            </td>
+            <td>
+                <input type="button" value="Accetta" onclick="accetta('{{ user.username }}')">
+                <input type="button" value="Rifiuta" onclick="rifiuta('{{ user.username }}')">
+            </td>
+        </tr>
+    </table>

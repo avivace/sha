@@ -1,12 +1,10 @@
-    <table class="table table-hover">
-        <tr>
-            <td>
-				{{ stanza.description }}
-            </td>
-            <td>
-				{% for attuatore in stanza.attuatori %}
-        			{% include '_attuatore.html' %}
-    			{% endfor %}
-            </td>
-        </tr>
-    </table>
+					<tr>
+						<td>{{ stanza.description }}</td>
+						<td>
+							<table class="table table-bordered">
+								{% for attuatore in stanza.attuatori %}
+									{% include '_attuatore.html' %}
+								{% endfor %}
+							</table>
+						</td>
+					</tr>

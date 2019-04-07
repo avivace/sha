@@ -1,11 +1,11 @@
-    <table class="table table-hover">
-        <tr>
-            <td>
-				<form>
-					{{ attuatore.description }}
-  					<input type="button" value="Accendi" onclick="accendi('{{ attuatore.topic }}')">
-					<input type="button" value="Spegni" onclick="spegni('{{ attuatore.topic }}')">
-				</form>
-			</td>
-        </tr>
-    </table>
+								<tr>
+									<td>
+										{{ attuatore.description }}
+									</td>
+									<td>
+										<form>
+											<input type="button" value="Accendi" onclick="accendi('{{ attuatore.topic }}')">
+											<input type="button" value="Spegni" onclick="spegni('{{ attuatore.topic }}')">
+										</form>
+									</td>
+								</tr>

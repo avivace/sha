@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    {% for piano in piani %}
-        {% include '_piano.html' %}
-    {% endfor %}
+	<table class="table table-bordered">
+		{% for piano in piani %}
+			{% include '_piano.html' %}
+		{% endfor %}
+	</table>
 	<script>
 					
 		function accendi(topic) {

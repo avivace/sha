@@ -57,7 +57,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username=form.username.data, is_active=True).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -81,9 +81,9 @@ def register():
     if form.validate_on_submit():
         numUtenti=User.query.count()
         if numUtenti < 1:
-            user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=True)
+            user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=True, is_active=True)
         else: 
-            user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=False)
+            user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=False, is_active=False)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -133,6 +133,35 @@ def user(username):
         if posts.has_prev else None
     return render_template('user.html', user=user, posts=posts.items,
                            next_url=next_url, prev_url=prev_url)
+
+@app.route('/user_not_active')
+@login_required
+def user_not_active():
+    if current_user.is_admin:
+        userNotActive = User.query.filter_by(is_active=False).all()
+        return render_template('user_not_active.html', users=userNotActive)
+    else:
+        return render_template('404.html')
+
+@app.route('/accept_user/<username>')
+@login_required
+def accept_user(username):
+    if current_user.is_admin:
+        user = User.query.filter_by(username=username, is_active=False).first()
+        if user is None:
+            return jsonify(message='Username errato o mancante')
+        else:
+            user.is_active=True
+            db.session.commit()
+            return jsonify(message='Utente accettato')
+
+@app.route('/reject_user/<username>')
+@login_required
+def reject_user(username):
+    if current_user.is_admin:
+        User.query.filter_by(username=username, is_active=False).delete()
+        db.session.commit()
+        return jsonify(message='Utente rimosso')
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required

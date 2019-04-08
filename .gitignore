@@ -11,3 +11,5 @@ lib64/
 lib64
 share/
 pyvenv.cfg
+
+*.swp

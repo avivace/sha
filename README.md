@@ -2,6 +2,20 @@
 
 Marco Belotti, Francesco Bombarda, Antonio Vivace
 
+## Getting started
+
+```bash
+# Clone the project
+git clone https://github.com/avivace/sha
+# Create the python virtual env (first time after cloning, only)
+python3 -m venv .
+# Activate the virtual env
+source bin/activate
+# Install requirements
+pip3 install -r requirements.txt
+```
+
+
 Elenco Pacchetti:
 
 ```

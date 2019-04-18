@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 # Potrebbe essermi utile per generare un topic in caso di errore di lettura dal sensore
 import paho.mqtt.client as mqtt
 
-dbPath = r'/home/pi/smart-home-automation/WebApp/app.db'
+dbPath = r'/home/pi/smart-home-automation/webapp/app.db'
 
 engine = create_engine('sqlite:///%s' % dbPath, echo=True)
 Base = declarative_base(engine)

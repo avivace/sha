@@ -1,109 +1,82 @@
-import paho.mqtt.client as mqtt
 import time
+import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
+
 from datetime import datetime
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+dbPath = r'/home/pi/smart-home-automation/webapp/app.db'
+
+engine = create_engine('sqlite:///%s' % dbPath, echo=False)
+Base = declarative_base(engine)
+
+class Piano(Base):
+    """"""
+    __tablename__ = 'piano'
+    __table_args__ = {'autoload':True}
+
+class Stanza(Base):
+    """"""
+    __tablename__ = 'stanza'
+    __table_args__ = {'autoload':True}
+
+class Attuatore(Base):
+    """"""
+    __tablename__ = 'attuatore'
+    __table_args__ = {'autoload':True}
+
+def loadSession():
+    """"""
+    metadata = Base.metadata
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    return session
+
+session = loadSession()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-luce_uno=6
-luce_due=13
-luce_tre=19
-luce_qua=26
-luce_cin=12
-luce_sei=16
-luce_set=20
-luce_ott=21
+def loadHomeConfiguration():
+    piani = session.query(Piano).all()
+    attuatoreObj = {}
 
-GPIO.setup(luce_uno, GPIO.OUT)
-GPIO.setup(luce_due, GPIO.OUT)
-GPIO.setup(luce_tre, GPIO.OUT)
-GPIO.setup(luce_qua, GPIO.OUT)
-GPIO.setup(luce_cin, GPIO.OUT)
-GPIO.setup(luce_sei, GPIO.OUT)
-GPIO.setup(luce_set, GPIO.OUT)
-GPIO.setup(luce_ott, GPIO.OUT)
+    for piano in piani:
+        stanze = session.query(Stanza).filter_by(piano_id=piano.id).all()
+        for stanza in stanze:
+            attuatori = session.query(Attuatore).filter_by(stanza_id=stanza.id, type='lampada')
+            for attuatore in attuatori:
+                attuatoreObj[piano.topic + '/' + stanza.topic + '/' + attuatore.topic] = attuatore.pin
+
+    return attuatoreObj
 
 def on_disconnect(client, userdata, rc):
     if rc != 0:
-        adesso=time.time()
-        fh=open("/home/pi/luci/log.txt",'r')
-        leggi=fh.readlines()
-        fh.close()
-        fh=open("/home/pi/luci/log.txt",'w')
-        fh.writelines(leggi)
-        ora_log=(time.strftime("%H:%M:%S %d/%m/%Y"))
-        fh.write('MQTT disconnesso ' + ora_log + ' ' + '\n')
-        fh.close()
-        print (" disconnesso dal server")
+        print ("\nDISCONNESSO")
 
 def on_connect(client, userdata, flags, rc):
-    print ("CONNESSO")
-    client.subscribe("pianoTerra/cucina/lampadario")
-    client.subscribe("pianoTerra/bagno/lampadario")
-    client.subscribe("pianoTerra/salotto/lampadario")
-    client.subscribe("primoPiano/cameraMatrimoniale/lampadario")
-    client.subscribe("primoPiano/bagno/lampadario")
-    client.subscribe("mansarda/bagno/lampadario")
-    client.subscribe("garage/lavanderia/lampadario")
+    print ("CONNESSIONE EFFETTUATA\n")
+
+    for topic in userdata:
+        client.subscribe(topic)
+        GPIO.setup(userdata[topic], GPIO.OUT)
+        GPIO.output(userdata[topic], 1)
+        print('Sottoscritto al topic: ' + topic)
+    print('\n')
 
 def on_message(client, userdata, msg):
       messaggio=str(msg.payload)
       topic=str(msg.topic)
-      print ("COMANDO: " + messaggio + " TOPIC: " + topic)
+      print ("RICEVUTO COMANDO: " + messaggio + " SUL TOPIC: " + topic)
 
-      if topic=="pianoTerra/cucina/lampadario":
-         if messaggio=="1" or messaggio=="0":
-             GPIO.output(luce_uno, int(messaggio))
-             client.publish("state/pianoTerra/cucina/lampadario", messaggio)
-             print ("LUCE UNO: " + messaggio)
+      if userdata.has_key(topic):
+         GPIO.output(userdata[topic], int(messaggio))
+         client.publish("state/" + topic, messaggio)
+         print ("NOTIFICA STATO: " + messaggio + " SUL TOPIC: " + "state/" + topic + "\n")
 
-      if topic=="pianoTerra/bagno/lampadario":
-         if messaggio=="1" or messaggio=="0":
-             GPIO.output(luce_due, int(messaggio))
-             client.publish("state/pianoTerra/bagno/lampadario", messaggio)
-             print ("LUCE DUE: " + messaggio)
-
-      if topic=="pianoTerra/salotto/lampadario":
-         if messaggio=="1" or messaggio=="0":
-             GPIO.output(luce_tre, int(messaggio))
-             client.publish("state/pianoTerra/salotto/lampadario", messaggio)
-             print ("LUCE TRE: " + messaggio)
-
-      if topic=="primoPiano/cameraMatrimoniale/lampadario":
-         if messaggio=="1" or messaggio=="0":
-             GPIO.output(luce_qua, int(messaggio))
-             client.publish("state/primoPiano/cameraMatrimoniale/lampadario", messaggio)
-             print ("LUCE QUATTRO: " + messaggio)
-
-      if topic=="primoPiano/bagno/lampadario":
-         if messaggio=="1" or messaggio=="0":
-             GPIO.output(luce_cin, int(messaggio))
-             client.publish("state/primoPiano/bagno/lampadario", messaggio)
-             print ("LUCE CINQUE: " + messaggio)
-
-      if topic=="mansarda/bagno/lampadario":
-         if messaggio=="1" or messaggio=="0":
-             GPIO.output(luce_sei, int(messaggio))
-             client.publish("state/mansarda/bagno/lampadario", messaggio)
-             print ("LUCE SEI: " + messaggio)
-
-      if topic=="garage/lavanderia/lampadario":
-         if messaggio=="1" or messaggio=="0":
-             GPIO.output(luce_set, int(messaggio))
-             client.publish("state/garage/lavanderia/lampadario", messaggio)
-             print ("LUCE SETTE: " + messaggio)
-
-GPIO.output(luce_uno, 1)
-GPIO.output(luce_due, 1)
-GPIO.output(luce_tre, 1)
-GPIO.output(luce_qua, 1)
-GPIO.output(luce_cin, 1)
-GPIO.output(luce_sei, 1)
-GPIO.output(luce_set, 1)
-GPIO.output(luce_ott, 1)
-
-client = mqtt.Client()
+client = mqtt.Client(userdata=loadHomeConfiguration())
 client.on_connect = on_connect
 client.on_message = on_message
 client.on_disconnect = on_disconnect

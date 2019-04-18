@@ -10,26 +10,30 @@
 				
 				let piano_select = document.getElementById('select_piano');
 				let stanza_select = document.getElementById('select_stanza');
+				let count = 0;
+				
+				window.onload = function() {
+					stanza_update();
+					count = 1;
+				};
 				
 				piano_select.onchange = function() {
-					
+					if (count > 0)
+						stanza_update();
+				};
+				
+				function stanza_update() {
 					piano = piano_select.value;
-					
 					fetch('/stanza/' + piano).then(function(response) {
-					
 						response.json().then(function(data) {
-						
 							let optionHTML = '';
 							for(let stanza of data.stanze) {
 								optionHTML += '<option value="' + stanza.id + '">' + stanza.description + '</option>';
 							};
-							
 							stanza_select.innerHTML = optionHTML;
 						});
 					});
 				};
-				
-				
 			</script>
         </div>
     </div>

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Aggiungi Pulsante</h1>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+			<script>
+				let piano_select = document.getElementById('select_piano');
+				let stanza_select = document.getElementById('select_stanza');
+				let topic_select = document.getElementById('select_topic');
+				let count = 0;
+				
+				window.onload = function() {
+					stanza_update();
+					count = 1;
+				};
+				
+				select_piano.onchange = function() {
+					if (count > 0)
+						stanza_update();
+				};
+				
+				select_stanza.onchange = function() {
+					if (count > 0)
+						topic_update();
+				};
+				
+				function stanza_update() {
+					piano = piano_select.value;
+					fetch('/stanza/' + piano).then(function(response) {
+						response.json().then(function(data) {
+							let optionHTML = '';
+							for(let stanza of data.stanze) {
+								optionHTML += '<option value="' + stanza.id + '">' + stanza.description + '</option>';
+							};
+							stanza_select.innerHTML = optionHTML;
+						});
+					});
+					topic_update();
+				};
+				
+				function topic_update() {
+					stanza = stanza_select.value;
+					fetch('/topic/' + piano + '/' + stanza).then(function(response) {
+						response.json().then(function(data) {
+							let optionHTML = '';
+							for(let topic of data.topics) {
+								optionHTML += '<option value="' + topic.id + '">' + topic.topic + '</option>';
+							};
+							topic_select.innerHTML = optionHTML;
+						});
+					});
+				};
+			</script>
+        </div>
+    </div>
+{% endblock %}

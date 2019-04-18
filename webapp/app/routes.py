@@ -304,25 +304,33 @@ def aggiungi_dispositivo():
     form = DispositivoForm()
     form.piano.choices = [(row.id, row.description) for row in Piano.query.all()]
     form.stanza.choices = [(row.id, row.description) for row in Stanza.query.all()]
-    form.tipo.choices = [(1,'Attuatore Luce'),(2,'Attuatore Switch'),(3,'Sensore')]				  
+    form.tipo.choices = [(1,'Lampada'),(2,'Termostato'), (3,'Serratura'), (4,'Sensore'),]
     if form.validate_on_submit():
-        if form.tipo.data == 1:		  
+        if form.tipo.data == 1:
             topic = Attuatore.query.filter_by(stanza_id=form.stanza.data, topic=form.topic.data).first()
             if topic is None:
-                dispositivo = Attuatore(topic=form.topic.data, description=form.description.data, type='luce', stanza_id=form.stanza.data)	
+                dispositivo = Attuatore(topic=form.topic.data, description=form.description.data, type='lampada', pin=form.pin.data, stanza_id=form.stanza.data)
                 db.session.add(dispositivo)
                 db.session.commit()
-                flash('Congratulazioni, attuatore luce registrato correttamente')
+                flash('Congratulazioni, lampada registrata correttamente')
                 return redirect(url_for('index'))
-        elif form.tipo.data == 2:		  
+        elif form.tipo.data == 2:
             topic = Attuatore.query.filter_by(stanza_id=form.stanza.data, topic=form.topic.data).first()
             if topic is None:
-                dispositivo = Attuatore(topic=form.topic.data, description=form.description.data, type='switch', stanza_id=form.stanza.data)	
+                dispositivo = Attuatore(topic=form.topic.data, description=form.description.data, type='termostato', pin=form.pin.data, stanza_id=form.stanza.data)
                 db.session.add(dispositivo)
                 db.session.commit()
-                flash('Congratulazioni, attuatore registrato correttamente')
+                flash('Congratulazioni, termostato registrato correttamente')
                 return redirect(url_for('index'))
-        else:		  
+        elif form.tipo.data == 3:
+            topic = Attuatore.query.filter_by(stanza_id=form.stanza.data, topic=form.topic.data).first()
+            if topic is None:
+                dispositivo = Attuatore(topic=form.topic.data, description=form.description.data, type='serratura', pin=form.pin.data, stanza_id=form.stanza.data)
+                db.session.add(dispositivo)
+                db.session.commit()
+                flash('Congratulazioni, serratura registrata correttamente')
+                return redirect(url_for('index'))
+        elif form.tipo.data == 4:
             topic = Sensore.query.filter_by(stanza_id=form.stanza.data, topic=form.topic.data).first()
             if topic is None:
                 dispositivo = Sensore(topic=form.topic.data, description=form.description.data, type='temperatura', pin=form.pin.data, stanza_id=form.stanza.data)
@@ -338,7 +346,7 @@ def aggiungi_dispositivo():
 @login_required
 def dashboard():
     piani = Piano.query.all()
-	
+
     pianiArray = []
     stanzeArray = []
     attuatoriArray = []
@@ -352,7 +360,7 @@ def dashboard():
             stanzaObj = {}
             stanzaObj['id'] = stanza.id
             stanzaObj['description'] = stanza.description
-            attuatori = Attuatore.query.filter_by(stanza_id=stanza.id)
+            attuatori = Attuatore.query.filter_by(stanza_id=stanza.id, type='lampada')
             for attuatore in attuatori:
                 attuatoreObj = {}
                 attuatoreObj['id'] = attuatore.id

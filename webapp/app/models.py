@@ -1,12 +1,11 @@
-# coding=utf-8
-from datetime import datetime
-from hashlib import md5
-from time import time
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import json
+from time import time
+from hashlib import md5
+from datetime import datetime
 from app import app, db, login
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 followers = db.Table(
     'followers',
@@ -22,12 +21,12 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, index=True, unique=False)
     is_active = db.Column(db.Boolean, index=True, unique=False)
     password_hash = db.Column(db.String(128))
-	
+
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-	
+
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-	
+
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
@@ -116,7 +115,6 @@ class Post(db.Model):
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
-
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -142,10 +140,10 @@ class Piano(db.Model):
     topic = db.Column(db.String(64), index=True, unique=True)
     description = db.Column(db.String(120), index=False, unique=False)
     stanze = db.relationship('Stanza', backref='in_piano', lazy='dynamic')
-	
+
     def __repr__(self):
-	    return '<Piano {}>'.format(self.description)
-	
+        return '<Piano {}>'.format(self.description)
+
 class Stanza(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String(64), index=True, unique=False)
@@ -155,7 +153,7 @@ class Stanza(db.Model):
     sensori = db.relationship('Sensore', backref='in_stanza', lazy='dynamic')
 
     def __repr__(self):
-	    return '<Stanza {}>'.format(self.description)
+        return '<Stanza {}>'.format(self.description)
 
 class Attuatore(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -166,7 +164,17 @@ class Attuatore(db.Model):
     stanza_id = db.Column(db.Integer, db.ForeignKey('stanza.id'))
 
     def __repr__(self):
-	    return '<Attuatore {}>'.format(self.description)
+        return '<Attuatore {}>'.format(self.description)
+
+class Pulsante(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    attuatore_id = db.Column(db.String(64), index=True, unique=False)
+    description = db.Column(db.String(120), index=False, unique=False)
+    pin = db.Column(db.Integer, index=False, unique=True)
+    stanza_id = db.Column(db.Integer, db.ForeignKey('stanza.id'))
+
+    def __repr__(self):
+        return '<Pulsante {}>'.format(self.description)
 
 class Sensore(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -178,7 +186,7 @@ class Sensore(db.Model):
     letture = db.relationship('Lettura', backref='a_sensore', lazy='dynamic')
 
     def __repr__(self):
-	    return '<Sensore {}>'.format(self.description)
+        return '<Sensore {}>'.format(self.description)
 
 class Lettura(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -188,4 +196,4 @@ class Lettura(db.Model):
     sensore_id = db.Column(db.Integer, db.ForeignKey('sensore.id'))
 
     def __repr__(self):
-	    return '<Lettura avvenuta in data {}, pari a {}>'.format(self.timestamp, self.value)
+        return '<Lettura avvenuta in data {}, pari a {}>'.format(self.timestamp, self.value)

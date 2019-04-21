@@ -110,22 +110,4 @@ while True:
         if GPIO.input(pulsante['pin_pulsante']) == 1 and pulsante['stato_pulsante'] != 1:
             pulsante['stato_pulsante'] = 1
 
-    # CONTROLLO INTERRUTTORE 2
-    #if GPIO.input(int_due) != stato_int_due:
-     #   stato_rele_due=GPIO.input(luce_due)
-      #  stato_int_due=GPIO.input(int_due)
-       # if stato_rele_due==1: stato_rele_due=0
-        #elif stato_rele_due==0: stato_rele_due=1
-
-        #GPIO.output(luce_due, stato_rele_due)
-        #client = mqtt.Client()
-        #try:
-         #   client.connect("192.168.1.14", 1883, 60)
-          #  topic = "prova/state/salotto/luce_due"
-           # client.publish(topic, stato_rele_due)
-            #print "invio " + str(stato_rele_due) + " al topic " + topic
-        #except:
-         #   print "errore MQTT"
-        #print " luce due " + str(stato_rele_due)
-
     time.sleep(attesa_pulsante)

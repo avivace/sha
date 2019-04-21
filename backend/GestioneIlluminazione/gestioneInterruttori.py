@@ -5,8 +5,8 @@ import RPi.GPIO as GPIO
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import or_, and_
 
+# Percorso al Database SQLite
 dbPath = r'/home/pi/smart-home-automation/webapp/app.db'
 
 engine = create_engine('sqlite:///%s' % dbPath, echo=False)
@@ -39,7 +39,8 @@ def loadSession():
     session = Session()
     return session
 
-def loadHomeConfiguration():
+# Restituisce l'elenco dei pulsanti memorizzati nel sistema
+def loadPulsanti():
     piani = session.query(Piano).all()
     pulsantiArray = []
 
@@ -51,8 +52,6 @@ def loadHomeConfiguration():
                 pulsanti = session.query(Pulsante).filter_by(attuatore_id=attuatore.id)
                 for pulsante in pulsanti:
                     pulsanteObj = {}
-                    # Il tipo di dispositivo associato al pulsante mi serve per capire come gestire fisicamente il pulsante
-                    # per azionarlo correttamente
                     pulsanteObj['tipo'] = attuatore.type
                     pulsanteObj['pin_attuatore'] = attuatore.pin
                     pulsanteObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
@@ -62,20 +61,21 @@ def loadHomeConfiguration():
     return pulsantiArray
 
 session = loadSession()
-pulsanti = loadHomeConfiguration()
+pulsanti = loadPulsanti()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+
 attesa_pulsante=0.05
 
+# Settaggio GPIO Raspberry
 for pulsante in pulsanti:
     GPIO.setup(pulsante['pin_pulsante'],  GPIO.IN, pull_up_down=GPIO.PUD_UP)
     pulsante['stato_pulsante'] = GPIO.input(pulsante['pin_pulsante'])
     GPIO.setup(pulsante['pin_attuatore'], GPIO.OUT)
     GPIO.output(pulsante['pin_attuatore'], 1)
 
-# AZZERO ANCHE LO STATO DEGLI INTERRUTTORI SULL'INTERFACCIA
-
+# Effettuo la connessione a Broker MQTT
 try:
     client = mqtt.Client()
     client.connect("192.168.1.14", 1883, 60)
@@ -84,14 +84,14 @@ try:
 except:
     print ("ERRORE MQTT")
 
+# All'avvio spengo tutti i dispositivi connessi ai pulsanti
 for pulsante in pulsanti:
-    #La connect va fatta prima di ogni publish
     client.connect("192.168.1.14", 1883, 60)
     client.publish('state/' + pulsante['topic'], 1)
 
+# Controllo ciclico sui pulsanti memorizzati nel sistema
 while True:
-    # Da aggiungere la gestione diversificate di pulsanti per luci e per serrature sulla base
-    # del tipo di dispositivo associato al pulsante stesso
+    # Da aggiungere la gestione diversificate di pulsanti per luci e per serrature
     for pulsante in pulsanti:
         if GPIO.input(pulsante['pin_pulsante']) == 0 and pulsante['stato_pulsante'] != 0:
             stato_rele = GPIO.input(pulsante['pin_attuatore'])

@@ -2,11 +2,11 @@ import time
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
 
-from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+# Percorso al Database SQLite
 dbPath = r'/home/pi/smart-home-automation/webapp/app.db'
 
 engine = create_engine('sqlite:///%s' % dbPath, echo=False)
@@ -39,7 +39,7 @@ session = loadSession()
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-def loadHomeConfiguration():
+def loadLuci():
     piani = session.query(Piano).all()
     attuatoreObj = {}
 
@@ -52,13 +52,16 @@ def loadHomeConfiguration():
 
     return attuatoreObj
 
+# Metodo eseguito in fase di disconnessione dal Broker MQTT
 def on_disconnect(client, userdata, rc):
     if rc != 0:
         print ("\nDISCONNESSO")
 
+# Metodo eseguito in fase collegamento al Broker MQTT
 def on_connect(client, userdata, flags, rc):
     print ("CONNESSIONE EFFETTUATA\n")
 
+    # Settaggio GPIO Raspberry
     for topic in userdata:
         client.subscribe(topic)
         GPIO.setup(userdata[topic], GPIO.OUT)
@@ -66,6 +69,7 @@ def on_connect(client, userdata, flags, rc):
         print('Sottoscritto al topic: ' + topic)
     print('\n')
 
+# Metodo eseguito alla ricezione di un messaggio MQTT
 def on_message(client, userdata, msg):
       messaggio=str(msg.payload)
       topic=str(msg.topic)
@@ -76,7 +80,7 @@ def on_message(client, userdata, msg):
          client.publish("state/" + topic, messaggio)
          print ("NOTIFICA STATO: " + messaggio + " SUL TOPIC: " + "state/" + topic + "\n")
 
-client = mqtt.Client(userdata=loadHomeConfiguration())
+client = mqtt.Client(userdata=loadLuci())
 client.on_connect = on_connect
 client.on_message = on_message
 client.on_disconnect = on_disconnect

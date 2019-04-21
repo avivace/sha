@@ -88,6 +88,8 @@ client.on_disconnect = on_disconnect
 try:
     time.sleep(0.2)
     client.connect("192.168.1.14", 1883, 60)
+    topic = "notifica/controlloreLuci"
+    client.publish(topic, "OK")
 except:
     print ("ERRORE MQTT")
 

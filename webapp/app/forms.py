@@ -1,9 +1,6 @@
-# coding=utf-8
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
-    TextAreaField, SelectField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
-    Length
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from app.models import User
 
 class LoginForm(FlaskForm):
@@ -17,8 +14,7 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     cellular = StringField('Cellular', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
     def validate_username(self, username):
@@ -30,7 +26,7 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
-			
+
     def validate_cellular(self, cellular):
         user = User.query.filter_by(cellular=cellular.data).first()
         if user is not None:
@@ -42,8 +38,7 @@ class ResetPasswordRequestForm(FlaskForm):
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
 
 class EditProfileForm(FlaskForm):
@@ -61,31 +56,40 @@ class EditProfileForm(FlaskForm):
             if user is not None:
                 raise ValidationError('Please use a different username.')
 
+# Da rimuovere (Solo per prova)
 class PostForm(FlaskForm):
     post = TextAreaField('Say something', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+# Da rimuovere (Solo per prova)
 class MessageForm(FlaskForm):
-    message = TextAreaField('Message', validators=[
-        DataRequired(), Length(min=0, max=140)])
+    message = TextAreaField('Message', validators=[DataRequired(), Length(min=0, max=140)])
     submit = SubmitField('Submit')
 
 class PianoForm(FlaskForm):
     topic = StringField('Topic', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
     submit = SubmitField('Submit')
-	
+
 class StanzaForm(FlaskForm):
     piano = SelectField('Piano:', coerce=int, validators=[DataRequired()], id='select_piano')
     topic = StringField('Topic', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
     submit = SubmitField('Submit')
-	
+
 class DispositivoForm(FlaskForm):
     piano = SelectField('Piano:', coerce=int, validators=[DataRequired()], id='select_piano')
     stanza = SelectField('Stanza:', coerce=int, validators=[DataRequired()], id='select_stanza')
     tipo = SelectField('Tipologia:', coerce=int, validators=[DataRequired()], id='select_dispositivo')
     pin = StringField('Pin:', validators=[DataRequired()])
     topic = StringField('Topic', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class PulsanteForm(FlaskForm):
+    piano = SelectField('Piano:', coerce=int, validators=[DataRequired()], id='select_piano')
+    stanza = SelectField('Stanza:', coerce=int, validators=[DataRequired()], id='select_stanza')
+    topic = SelectField('Topic', coerce=int, validators=[DataRequired()], id='select_topic')
+    pin = StringField('Pin:', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
     submit = SubmitField('Submit')

@@ -1,57 +1,78 @@
-import RPi.GPIO as GPIO
-import paho.mqtt.client as mqtt
 import time
+import paho.mqtt.client as mqtt
+import RPi.GPIO as GPIO
+
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import or_, and_
+
+dbPath = r'/home/pi/smart-home-automation/webapp/app.db'
+
+engine = create_engine('sqlite:///%s' % dbPath, echo=False)
+Base = declarative_base(engine)
+
+class Piano(Base):
+    """"""
+    __tablename__ = 'piano'
+    __table_args__ = {'autoload':True}
+
+class Stanza(Base):
+    """"""
+    __tablename__ = 'stanza'
+    __table_args__ = {'autoload':True}
+
+class Attuatore(Base):
+    """"""
+    __tablename__ = 'attuatore'
+    __table_args__ = {'autoload':True}
+
+class Pulsante(Base):
+    """"""
+    __tablename__ = 'pulsante'
+    __table_args__ = {'autoload':True}
+
+def loadSession():
+    """"""
+    metadata = Base.metadata
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    return session
+
+def loadHomeConfiguration():
+    piani = session.query(Piano).all()
+    pulsantiArray = []
+
+    for piano in piani:
+        stanze = session.query(Stanza).filter_by(piano_id=piano.id).all()
+        for stanza in stanze:
+            attuatori = session.query(Attuatore).filter_by(stanza_id=stanza.id)
+            for attuatore in attuatori:
+                pulsanti = session.query(Pulsante).filter_by(attuatore_id=attuatore.id)
+                for pulsante in pulsanti:
+                    pulsanteObj = {}
+                    # Il tipo di dispositivo associato al pulsante mi serve per capire come gestire fisicamente il pulsante
+                    # per azionarlo correttamente
+                    pulsanteObj['tipo'] = attuatore.type
+                    pulsanteObj['pin_attuatore'] = attuatore.pin
+                    pulsanteObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
+                    pulsanteObj['pin_pulsante'] = pulsante.pin
+                    pulsantiArray.append(pulsanteObj)
+
+    return pulsantiArray
+
+session = loadSession()
+pulsanti = loadHomeConfiguration()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 attesa_pulsante=0.05
 
-# DICHIARAZIONE GPIO INTERRUTTORI
-int_uno = 5
-#int_due = da collegare
-#int_tre = da collegare
-#int_qua = da collegare
-
-GPIO.setup(int_uno,  GPIO.IN, pull_up_down=GPIO.PUD_UP)
-#GPIO.setup(int_due,  GPIO.IN, pull_up_down=GPIO.PUD_UP)
-#GPIO.setup(int_tre,  GPIO.IN, pull_up_down=GPIO.PUD_UP)
-#GPIO.setup(int_qua,  GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-
-# ANALISI E DICHIARAZIONE DELLO STATO INIZIALE DEGLI INTERRUTTORI
-stato_int_uno=GPIO.input(int_uno)
-#stato_int_due=GPIO.input(int_due)
-#stato_int_tre=GPIO.input(int_tre)
-#stato_int_qua=GPIO.input(int_qua)
-
-# DICHIARAZIONE GPIO LUCI
-luce_uno=6
-luce_due=13
-luce_tre=19
-luce_qua=26
-luce_cin=12
-luce_sei=16
-luce_set=20
-luce_ott=21
-
-GPIO.setup(luce_uno, GPIO.OUT)
-GPIO.setup(luce_due, GPIO.OUT)
-GPIO.setup(luce_tre, GPIO.OUT)
-GPIO.setup(luce_qua, GPIO.OUT)
-GPIO.setup(luce_cin, GPIO.OUT)
-GPIO.setup(luce_sei, GPIO.OUT)
-GPIO.setup(luce_set, GPIO.OUT)
-GPIO.setup(luce_ott, GPIO.OUT)
-
-# SPENGO TUTTE LE LUCI ALL'AVVIO
-GPIO.output(luce_uno, 1)
-GPIO.output(luce_due, 1)
-GPIO.output(luce_tre, 1)
-GPIO.output(luce_qua, 1)
-GPIO.output(luce_cin, 1)
-GPIO.output(luce_sei, 1)
-GPIO.output(luce_set, 1)
-GPIO.output(luce_ott, 1)
+for pulsante in pulsanti:
+    GPIO.setup(pulsante['pin_pulsante'],  GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    pulsante['stato_pulsante'] = GPIO.input(pulsante['pin_pulsante'])
+    GPIO.setup(pulsante['pin_attuatore'], GPIO.OUT)
+    GPIO.output(pulsante['pin_attuatore'], 1)
 
 # AZZERO ANCHE LO STATO DEGLI INTERRUTTORI SULL'INTERFACCIA
 
@@ -62,33 +83,32 @@ try:
     client.publish(topic, "OK")
 except:
     print ("ERRORE MQTT")
-	
-client.publish("state/pianoTerra/cucina/lampadario", 1)
-client.publish("state/pianoTerra/bagno/lampadario", 1)
-client.publish("state/pianoTerra/salotto/lampadario", 1)
-client.publish("state/primoPiano/cameraMatrimoniale/lampadario", 1)
-client.publish("state/primoPiano/bagno/lampadario", 1)
-client.publish("state/mansarda/bagno/lampadario", 1)
-client.publish("state/garage/lavanderia/lampadario", 1)
+
+for pulsante in pulsanti:
+    #La connect va fatta prima di ogni publish
+    client.connect("192.168.1.14", 1883, 60)
+    client.publish('state/' + pulsante['topic'], 1)
 
 while True:
+    # Da aggiungere la gestione diversificate di pulsanti per luci e per serrature sulla base
+    # del tipo di dispositivo associato al pulsante stesso
+    for pulsante in pulsanti:
+        if GPIO.input(pulsante['pin_pulsante']) == 0 and pulsante['stato_pulsante'] != 0:
+            stato_rele = GPIO.input(pulsante['pin_attuatore'])
+            pulsante['stato_pulsante'] = GPIO.input(pulsante['pin_pulsante'])
+            if stato_rele == 1: stato_rele = 0
+            elif stato_rele == 0: stato_rele = 1
 
-    # CONTROLLO INTERRUTTORE 1
-    if GPIO.input(int_uno) == 0 and stato_int_uno != 0:
-        stato_rele_uno=GPIO.input(luce_uno)
-        stato_int_uno=GPIO.input(int_uno)
-        if stato_rele_uno==1: stato_rele_uno=0
-        elif stato_rele_uno==0: stato_rele_uno=1
+            print ("COMANDO: " + str(GPIO.input(pulsante['pin_pulsante'])) + "\nSU TOPIC: " + pulsante['topic'] + "\nATTUATORE PRIMA: " + str(GPIO.input(pulsante['pin_attuatore'])))
 
-        GPIO.output(luce_uno, stato_rele_uno)
-        topic = "state/pianoTerra/cucina/lampadario"
-        client.publish(topic, stato_rele_uno)
+            GPIO.output(pulsante['pin_attuatore'], stato_rele)
+            client.connect("192.168.1.14", 1883, 60)
+            client.publish('state/' + pulsante['topic'], stato_rele)
 
-        print ("COMANDO: " + str(stato_rele_uno) + " TOPIC: " + topic)
-        print ("LUCE UNO: " + str(stato_rele_uno))
-	
-    if GPIO.input(int_uno) == 1 and stato_int_uno != 1:
-        stato_int_uno = 1
+            print ("ATTUATORE DOPO: " + str(GPIO.input(pulsante['pin_attuatore'])) + '\n')
+
+        if GPIO.input(pulsante['pin_pulsante']) == 1 and pulsante['stato_pulsante'] != 1:
+            pulsante['stato_pulsante'] = 1
 
     # CONTROLLO INTERRUTTORE 2
     #if GPIO.input(int_due) != stato_int_due:

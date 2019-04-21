@@ -1,12 +1,11 @@
-# coding=utf-8
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, \
-    ResetPasswordRequestForm, ResetPasswordForm, PianoForm, StanzaForm, DispositivoForm, MessageForm
-from app.models import User, Post, Piano, Stanza, Attuatore, Sensore, Message, Notification
+    ResetPasswordRequestForm, ResetPasswordForm, PianoForm, StanzaForm, DispositivoForm, MessageForm, PulsanteForm
+from app.models import User, Post, Piano, Stanza, Attuatore, Sensore, Message, Notification, Pulsante
 from app.email import send_password_reset_email
 import paho.mqtt.client as mqtt
 
@@ -79,6 +78,7 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
+        # Primo utente registrato è amministratore
         numUtenti=User.query.count()
         if numUtenti < 1:
             user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=True, is_active=True)
@@ -102,8 +102,7 @@ def reset_password_request():
             send_password_reset_email(user)
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('login'))
-    return render_template('reset_password_request.html',
-                           title='Reset Password', form=form)
+    return render_template('reset_password_request.html', title='Reset Password', form=form)
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
@@ -176,8 +175,7 @@ def edit_profile():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    return render_template('edit_profile.html', title='Edit Profile',
-                           form=form)
+    return render_template('edit_profile.html', title='Edit Profile', form=form)
 
 @app.route('/follow/<username>')
 @login_required
@@ -283,28 +281,13 @@ def aggiungi_stanza():
         return redirect(url_for('aggiungi_stanza'))
     return render_template('aggiungi_stanza.html', title='Aggiungi Stanza', form=form)
 
-@app.route('/stanza/<piano>')
-@login_required
-def stanza(piano):
-    stanze = Stanza.query.filter_by(piano_id=piano).all()
-
-    stanzaArray = []
-
-    for stanza in stanze:
-        stanzaObj = {}
-        stanzaObj['id'] = stanza.id
-        stanzaObj['description'] = stanza.description
-        stanzaArray.append(stanzaObj)
-
-    return jsonify({'stanze' : stanzaArray})
-
 @app.route('/aggiungi_dispositivo', methods=['GET', 'POST'])
 @login_required
 def aggiungi_dispositivo():
     form = DispositivoForm()
     form.piano.choices = [(row.id, row.description) for row in Piano.query.all()]
     form.stanza.choices = [(row.id, row.description) for row in Stanza.query.all()]
-    form.tipo.choices = [(1,'Lampada'),(2,'Termostato'), (3,'Serratura'), (4,'Sensore'),]
+    form.tipo.choices = [(1,'Lampada'),(2,'Termostato'), (3,'Serratura'), (4,'Sensore')]
     if form.validate_on_submit():
         if form.tipo.data == 1:
             topic = Attuatore.query.filter_by(stanza_id=form.stanza.data, topic=form.topic.data).first()
@@ -342,6 +325,43 @@ def aggiungi_dispositivo():
         return redirect(url_for('aggiungi_dispositivo'))
     return render_template('aggiungi_dispositivo.html', title='Aggiungi Dispositivo', form=form)
 
+# Restituisce l'elenco di tutti i topic associati ad attuatori di tipo lampada
+def get_topics():
+    piani = Piano.query.all()
+    topicArray = []
+    topicObj = ()
+
+    for piano in piani:
+        stanze = Stanza.query.filter_by(piano_id=piano.id).all()
+        for stanza in stanze:
+		# Aggiungere elenco attuatori sia di tipo "lampada" che di tipo "serratura"
+		# Da vedere come costruire la query con operatore di OR
+            attuatori = Attuatore.query.filter_by(stanza_id=stanza.id, type='lampada')
+            for attuatore in attuatori:
+                topicObj = {}
+                topicObj['id'] = attuatore.id
+                topicObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
+            topicArray.append(topicObj)
+
+    return topicArray
+
+@app.route('/aggiungi_pulsante', methods=['GET', 'POST'])
+@login_required
+def aggiungi_pulsante():
+    topics = get_topics()
+    form = PulsanteForm()
+    form.piano.choices = [(row.id, row.description) for row in Piano.query.all()]
+    form.stanza.choices = [(row.id, row.description) for row in Stanza.query.all()]
+    form.topic.choices = [(row['id'], row['topic']) for row in topics]
+    if form.validate_on_submit():
+        pulsante = Pulsante(attuatore_id=form.topic.data, description=form.description.data, pin=form.pin.data, stanza_id=form.stanza.data)
+        db.session.add(pulsante)
+        db.session.commit()
+        flash('Congratulazioni, pulsante registrato correttamente')
+        return redirect(url_for('index'))
+    return render_template('aggiungi_pulsante.html', title='Aggiungi Pulsante', form=form)
+
+# Recupera la struttura dell'abitazione per poi far costruire l'interfaccia di controllo
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -376,13 +396,48 @@ def dashboard():
 
     return render_template('dashboard.html', piani=pianiArray)
 
+# Restituisce l'elenco delle stanze di un determinato piano
+@app.route('/stanza/<pianoId>')
+@login_required
+def stanza(pianoId):
+    stanze = Stanza.query.filter_by(piano_id=pianoId).all()
+    stanzaArray = []
+
+    for stanza in stanze:
+        stanzaObj = {}
+        stanzaObj['id'] = stanza.id
+        stanzaObj['description'] = stanza.description
+        stanzaArray.append(stanzaObj)
+
+    return jsonify({'stanze' : stanzaArray})
+
+# Restituisce l'elenco dei topic appartenenti alla coppia Piano-Stanza
+@app.route('/topic/<pianoId>/<stanzaId>')
+@login_required
+def topic(pianoId, stanzaId):
+    piani = Piano.query.filter_by(id=pianoId)
+    topicArray = []
+
+    for piano in piani:
+        stanze = Stanza.query.filter_by(piano_id=pianoId, id=stanzaId)
+        for stanza in stanze:
+            attuatori = Attuatore.query.filter_by(stanza_id=stanza.id, type='lampada')
+            for attuatore in attuatori:
+                topicObj = {}
+                topicObj['id'] = attuatore.id
+                topicObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
+            topicArray.append(topicObj)
+
+    return jsonify({'topics' : topicArray})
+
+# Effettua Publish MQTT per far attuare al backend i comandi sugli attuatori
 @app.route('/attuatore/<piano_topic>/<stanza_topic>/<attuatore_topic>/<value>')
 @login_required
 def attuatore(piano_topic, stanza_topic, attuatore_topic, value):
     try:
         client = mqtt.Client()
         client.connect("192.168.1.14", 1883, 60)
-        topic = "state/interfacciaConnessa"
+        topic = "notifica/controlloreInterfaccia"
         client.publish(topic, "OK")
     except:
         print("ERRORE MQTT")
@@ -391,6 +446,7 @@ def attuatore(piano_topic, stanza_topic, attuatore_topic, value):
     topic = piano_topic + '/' + stanza_topic + '/' + attuatore_topic
     client.publish(topic, value)
 
+# Da inserire risposta json per aggiornare lo stato dell'attuatore sull'interfaccia (ancora da fare)
     stanzaArray = []
 
     #for stanza in stanze:

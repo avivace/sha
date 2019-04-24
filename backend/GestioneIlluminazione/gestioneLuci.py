@@ -1,4 +1,5 @@
 import time
+import json
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
 
@@ -27,6 +28,16 @@ class Attuatore(Base):
     __tablename__ = 'attuatore'
     __table_args__ = {'autoload':True}
 
+class User(Base):
+    """"""
+    __tablename__ = 'user'
+    __table_args__ = {'autoload':True}
+
+class Notification(Base):
+    """"""
+    __tablename__ = 'notification'
+    __table_args__ = {'autoload':True}
+
 def loadSession():
     """"""
     metadata = Base.metadata
@@ -52,6 +63,17 @@ def loadLuci():
 
     return attuatoreObj
 
+def notifyAll(topic, value):
+    users = session.query(User).all()
+    notifications = session.query(Notification).filter_by(name=topic)
+    for n in notifications:
+        session.delete(n)
+    session.commit()
+
+    for user in users:
+        session.add(Notification(name=topic, payload_json=value, user_id=user.id, timestamp=time.time()))
+    session.commit()
+
 # Metodo eseguito in fase di disconnessione dal Broker MQTT
 def on_disconnect(client, userdata, rc):
     if rc != 0:
@@ -64,10 +86,10 @@ def on_connect(client, userdata, flags, rc):
     # Settaggio GPIO Raspberry
     for topic in userdata:
         client.subscribe(topic)
+        print('Sottoscritto al topic: ' + topic + '\n')
         GPIO.setup(userdata[topic], GPIO.OUT)
         GPIO.output(userdata[topic], 1)
-        print('Sottoscritto al topic: ' + topic)
-    print('\n')
+        notifyAll('state/' + topic, json.dumps(1))
 
 # Metodo eseguito alla ricezione di un messaggio MQTT
 def on_message(client, userdata, msg):
@@ -76,9 +98,10 @@ def on_message(client, userdata, msg):
       print ("RICEVUTO COMANDO: " + messaggio + " SUL TOPIC: " + topic)
 
       if userdata.has_key(topic):
-         GPIO.output(userdata[topic], int(messaggio))
-         client.publish("state/" + topic, messaggio)
-         print ("NOTIFICA STATO: " + messaggio + " SUL TOPIC: " + "state/" + topic + "\n")
+        GPIO.output(userdata[topic], int(messaggio))
+        notifyAll('state/' + topic, json.dumps(int(messaggio)))
+        client.publish("state/" + topic, messaggio)
+        print ("NOTIFICA STATO: " + messaggio + " SUL TOPIC: " + "state/" + topic + "\n")
 
 client = mqtt.Client(userdata=loadLuci())
 client.on_connect = on_connect

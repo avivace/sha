@@ -1,4 +1,5 @@
 import time
+import json
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
 
@@ -32,6 +33,16 @@ class Pulsante(Base):
     __tablename__ = 'pulsante'
     __table_args__ = {'autoload':True}
 
+class User(Base):
+    """"""
+    __tablename__ = 'user'
+    __table_args__ = {'autoload':True}
+
+class Notification(Base):
+    """"""
+    __tablename__ = 'notification'
+    __table_args__ = {'autoload':True}
+
 def loadSession():
     """"""
     metadata = Base.metadata
@@ -60,6 +71,17 @@ def loadPulsanti():
 
     return pulsantiArray
 
+def notifyAll(topic, value):
+    users = session.query(User).all()
+    notifications = session.query(Notification).filter_by(name=topic)
+    for n in notifications:
+        session.delete(n)
+    session.commit()
+
+    for user in users:
+        session.add(Notification(name=topic, payload_json=value, user_id=user.id, timestamp=time.time()))
+    session.commit()
+
 session = loadSession()
 pulsanti = loadPulsanti()
 
@@ -67,13 +89,6 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 attesa_pulsante=0.05
-
-# Settaggio GPIO Raspberry
-for pulsante in pulsanti:
-    GPIO.setup(pulsante['pin_pulsante'],  GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    pulsante['stato_pulsante'] = GPIO.input(pulsante['pin_pulsante'])
-    GPIO.setup(pulsante['pin_attuatore'], GPIO.OUT)
-    GPIO.output(pulsante['pin_attuatore'], 1)
 
 # Effettuo la connessione a Broker MQTT
 try:
@@ -84,10 +99,16 @@ try:
 except:
     print ("ERRORE MQTT")
 
-# All'avvio spengo tutti i dispositivi connessi ai pulsanti
+# Settaggio GPIO Raspberry
 for pulsante in pulsanti:
+    GPIO.setup(pulsante['pin_pulsante'],  GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    pulsante['stato_pulsante'] = GPIO.input(pulsante['pin_pulsante'])
+    GPIO.setup(pulsante['pin_attuatore'], GPIO.OUT)
+    GPIO.output(pulsante['pin_attuatore'], 1)
+    # All'avvio spengo tutti i dispositivi connessi ai pulsanti
     client.connect("192.168.1.14", 1883, 60)
     client.publish('state/' + pulsante['topic'], 1)
+    notifyAll('state/' + pulsante['topic'], json.dumps(1))
 
 # Controllo ciclico sui pulsanti memorizzati nel sistema
 while True:
@@ -104,6 +125,7 @@ while True:
             GPIO.output(pulsante['pin_attuatore'], stato_rele)
             client.connect("192.168.1.14", 1883, 60)
             client.publish('state/' + pulsante['topic'], stato_rele)
+            notifyAll('state/' + pulsante['topic'], json.dumps(stato_rele))
 
             print ("ATTUATORE DOPO: " + str(GPIO.input(pulsante['pin_attuatore'])) + '\n')
 

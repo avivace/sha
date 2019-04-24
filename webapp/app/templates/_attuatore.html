@@ -4,8 +4,7 @@
 									</td>
 									<td>
 										<form>
-											<input type="button" value="Accendi" onclick="accendi('{{ attuatore.topic }}')">
-											<input type="button" value="Spegni" onclick="spegni('{{ attuatore.topic }}')">
+											<button type="button" id={{ "state/" + attuatore.topic }} value="Accendi" onclick="change('{{ attuatore.topic }}')" class="btn btn-primary">Accendi</button>
 										</form>
 									</td>
 								</tr>

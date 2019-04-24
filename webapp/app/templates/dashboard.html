@@ -7,27 +7,62 @@
 		{% endfor %}
 	</table>
 	<script>
-					
-		function accendi(topic) {
-  			alert("Luce accesa " + topic + '/0');
-			
-			fetch('/attuatore/' + topic + '/0').then(function(response) {
-					
-				response.json().then(function(data) {
-						alert("Funzione fatta");
+		function change(topic) {
+			button = document.getElementById("state/" + topic);
+			button = document.getElementById("state/" + topic);
+			if (button.childNodes[0].nodeValue == "Accendi") {
+				alert("Luce accesa " + topic + '/0');
+
+				fetch('/attuatore/' + topic + '/0').then(function(response) {
+
+					response.json().then(function(data) {
+						alert(data.message);
+					});
 				});
-			});
-		};
-					
-		function spegni(topic) {
-  			alert("Luce spenta " + topic + '/1');
-			
-			fetch('/attuatore/' + topic + '/1').then(function(response) {
-					
-				response.json().then(function(data) {
-						
+			}
+			else if (button.childNodes[0].nodeValue == "Spegni") {
+				alert("Luce spenta " + topic + '/1');
+
+				fetch('/attuatore/' + topic + '/1').then(function(response) {
+					response.json().then(function(data) {
+						alert(data.message);
+					});
 				});
-			});
+			}
 		};
 	</script>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+    <script>
+        // ...
+        {% if current_user.is_authenticated %}
+        $(function() {
+            setInterval(function() {
+                $.ajax('{{ url_for('notifications') }}').done(
+                    function(notifications) {
+                        for (var i = 0; i < notifications.length; i++) {
+                            if (notifications[i].name != 'unread_message_count')
+                                set_button_state(notifications[i].name, notifications[i].data)
+                        }
+                    }
+                );
+            }, 3000);
+        });
+        {% endif %}
+    </script>
+    <script>
+        function set_button_state(button_id, state) {
+            var button = document.getElementById(button_id);
+            if (state == 0) {
+                button.childNodes[0].nodeValue="Spegni";
+                button.style.background = "green";
+            }
+            else {
+                button.childNodes[0].nodeValue="Accendi";
+                button.style.background = "";
+            }
+        };
+    </script>
 {% endblock %}

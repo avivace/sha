@@ -78,15 +78,20 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        # Primo utente registrato è amministratore
         numUtenti=User.query.count()
         if numUtenti < 1:
             user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=True, is_active=True)
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
         else: 
             user = User(username=form.username.data, email=form.email.data, cellular=form.cellular.data, is_admin=False, is_active=False)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            admin = User.query.filter_by(is_admin=True).first()
+            admin.add_notification('registration_request', admin.new_requests())
+            db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
@@ -152,6 +157,8 @@ def accept_user(username):
         else:
             user.is_active=True
             db.session.commit()
+            current_user.add_notification('registration_request', current_user.new_requests())
+            db.session.commit()
             return jsonify(message='Utente accettato')
 
 @app.route('/reject_user/<username>')
@@ -159,6 +166,8 @@ def accept_user(username):
 def reject_user(username):
     if current_user.is_admin:
         User.query.filter_by(username=username, is_active=False).delete()
+        db.session.commit()
+        current_user.add_notification('registration_request', current_user.new_requests())
         db.session.commit()
         return jsonify(message='Utente rimosso')
 
@@ -329,13 +338,12 @@ def aggiungi_dispositivo():
 def get_topics():
     piani = Piano.query.all()
     topicArray = []
-    topicObj = ()
 
     for piano in piani:
         stanze = Stanza.query.filter_by(piano_id=piano.id).all()
         for stanza in stanze:
-		# Aggiungere elenco attuatori sia di tipo "lampada" che di tipo "serratura"
-		# Da vedere come costruire la query con operatore di OR
+        # Aggiungere elenco attuatori sia di tipo "lampada" che di tipo "serratura"
+        # Da vedere come costruire la query con operatore di OR
             attuatori = Attuatore.query.filter_by(stanza_id=stanza.id, type='lampada')
             for attuatore in attuatori:
                 topicObj = {}
@@ -441,18 +449,10 @@ def attuatore(piano_topic, stanza_topic, attuatore_topic, value):
         client.publish(topic, "OK")
     except:
         print("ERRORE MQTT")
+        return jsonify(message='Errore')
 
     client.connect("192.168.1.14", 1883, 60)
     topic = piano_topic + '/' + stanza_topic + '/' + attuatore_topic
     client.publish(topic, value)
 
-# Da inserire risposta json per aggiornare lo stato dell'attuatore sull'interfaccia (ancora da fare)
-    stanzaArray = []
-
-    #for stanza in stanze:
-    stanzaObj = {}
-    stanzaObj['id'] = 'id'
-    stanzaObj['description'] = 'description'
-    stanzaArray.append(stanzaObj)
-
-    return jsonify({'stanze' : stanzaArray})
+    return jsonify(message='Azione eseguita')

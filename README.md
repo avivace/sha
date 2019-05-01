@@ -4,7 +4,7 @@ Marco Belotti, Francesco Bombarda, Antonio Vivace
 
 # IP Access
 
-IP: 82.60.54.148:5000
+IP: 87.8.77.138:5000
 
 ## Getting started
 

@@ -3,9 +3,10 @@ import json
 from time import time
 from hashlib import md5
 from datetime import datetime
-from app import app, db, login
+from app import db, login
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app
 
 followers = db.Table(
     'followers',
@@ -94,12 +95,12 @@ class User(UserMixin, db.Model):
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+            current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
 
     @staticmethod
     def verify_reset_password_token(token):
         try:
-            id = jwt.decode(token, app.config['SECRET_KEY'],
+            id = jwt.decode(token, current_app.config['SECRET_KEY'],
                             algorithms=['HS256'])['reset_password']
         except:
             return
@@ -200,3 +201,12 @@ class Lettura(db.Model):
 
     def __repr__(self):
         return '<Lettura avvenuta in data {}, pari a {}>'.format(self.timestamp, self.value)
+
+class Riscaldamento(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    set_temperatura = db.Column(db.Float, index=False, unique=False)
+    start_temperatura = db.Column(db.Float, index=False, unique=False, nullable=True)
+    set_orario = db.Column(db.DateTime, index=False, unique=False)
+    start_orario = db.Column(db.DateTime, index=True, unique=False)
+    stop_orario = db.Column(db.DateTime, index=True, unique=False, nullable=True)
+    attuatore_id = db.Column(db.Integer, db.ForeignKey('attuatore.id'))

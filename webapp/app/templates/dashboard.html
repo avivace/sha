@@ -9,7 +9,6 @@
 	<script>
 		function change(topic) {
 			button = document.getElementById("state/" + topic);
-			button = document.getElementById("state/" + topic);
 			if (button.childNodes[0].nodeValue == "Accendi") {
 				alert("Luce accesa " + topic + '/0');
 
@@ -40,10 +39,10 @@
         {% if current_user.is_authenticated %}
         $(function() {
             setInterval(function() {
-                $.ajax('{{ url_for('notifications') }}').done(
+                $.ajax('{{ url_for('main.notifications') }}').done(
                     function(notifications) {
                         for (var i = 0; i < notifications.length; i++) {
-                            if (notifications[i].name != 'unread_message_count')
+                            if (notifications[i].name != 'unread_message_count' && notifications[i].name != 'registration_request')
                                 set_button_state(notifications[i].name, notifications[i].data)
                         }
                     }

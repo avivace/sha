@@ -4,7 +4,11 @@
 									</td>
 									<td>
 										<form>
-											<button type="button" id={{ "state/" + attuatore.topic }} value="Accendi" onclick="change('{{ attuatore.topic }}')" class="btn btn-primary">Accendi</button>
+											{% if attuatore.type=='lampada' %}
+												<button type="button" id={{ "state/" + attuatore.topic }} value="Accendi" onclick="change('{{ attuatore.topic }}')" class="btn btn-primary">Accendi</button>
+											{% elif attuatore.type=='termostato' %}
+												<button type="button" id={{ "state/" + attuatore.topic }} value="Programma" onclick="location.href='{{ url_for('main.riscaldamento', attuatore_id=attuatore.id) }}';" class="btn btn-primary">Programma</button>
+											{% endif %}
 										</form>
 									</td>
 								</tr>

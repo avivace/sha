@@ -1,3 +1,18 @@
+# LaTeX robbe
+*.aux
+*.log
+*.toc
+*.pdf
+
+# Python3 Virtual Environment folders
+bin/
+lib/
+lib64/
+lib64
+share/
+pyvenv.cfg
+
+*.swp
 
 # Created by https://www.gitignore.io/api/python
 # Edit at https://www.gitignore.io/?templates=python

@@ -7,4 +7,5 @@ python3 app.py
 ```
 
 Base API path is [localhost:8080](http://localhost:8080)
+
 API documention is available at [localhost:8080/ui](http://localhost:8080/ui)

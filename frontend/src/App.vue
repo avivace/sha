@@ -1,30 +1,20 @@
 <template>
-  <v-app>
-    <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>SHA </span>
-        <span class="font-weight-light">SMART HOME AUTOMATION</span>
-      </v-toolbar-title>
-    </v-toolbar>
-
-    <v-content>
-      <HelloWorld/>
-    </v-content>
-  </v-app>
+  <div id="app">
+    <app-header/>
+    <router-view/>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+  import Header from '@/components/Header.vue'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  },
-  data () {
-    return {
-      //
-    }
+  export default {
+    created() {
+      this.$store.dispatch('auth/autoLogin');
+    },
+    components: {
+      AppHeader: Header,
+    },
+    
   }
-}
 </script>

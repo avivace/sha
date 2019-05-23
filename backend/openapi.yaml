@@ -1,7 +1,8 @@
 openapi: 3.0.0
 info:
-  title: JWT Example
+  title: Smart Home Automation
   version: '1.0'
+  description: Documentazione dell'API esposta dal backend di SHA. Progetto di Laboratorio di Progettazione. Marco Belotti, Francesco Bombarda, Antonio Vivace.
 paths:
   /auth/{user_id}:
     get:

@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import axios from 'axios';
-import Vuetify from 'vuetify/lib'
-import 'vuetify/src/stylus/app.styl'
+import BootstrapVue from 'bootstrap-vue'
+
+
 import store from '../store/index'
 import router from './router'
 
-Vue.use(Vuetify, {
-  iconfont: 'md',
-})
+Vue.use(BootstrapVue)
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.prototype.$axios = axios.create();
 

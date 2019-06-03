@@ -1,4 +1,4 @@
-connexion>=2.0.0rc3
+connexion
 connexion[swagger-ui]
 python-jose[cryptography]
 six>=1.9

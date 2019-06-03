@@ -1,7 +1,7 @@
 <template>
   <b-navbar toggleable type="light" variant="light" class="mb-5">
     <b-navbar-toggle target="nav_text_collapse"></b-navbar-toggle>
-    <b-navbar-brand>Analytics</b-navbar-brand>
+    <b-navbar-brand>Smart Home Automation</b-navbar-brand>
   
     <b-collapse is-nav id="nav_text_collapse">
       <b-navbar-nav>

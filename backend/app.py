@@ -7,8 +7,8 @@ from werkzeug.exceptions import Unauthorized
 
 from jose import JWTError, jwt
 
-JWT_ISSUER = 'connexion'
-JWT_SECRET = 'OVVERRIDE THIS WITH ENV'
+JWT_ISSUER = 'smarthomeautomation'
+JWT_SECRET = 'asdfasdfasdfasdfasdfasdfasdfasdfasdfa'
 JWT_LIFETIME_SECONDS = 600
 JWT_ALGORITHM = 'HS256'
 
@@ -46,4 +46,4 @@ def _current_timestamp() -> int:
 if __name__ == '__main__':
     app = connexion.FlaskApp(__name__)
     app.add_api('openapi.yaml')
-    app.run(port=8080)
+    app.run(port=8081)

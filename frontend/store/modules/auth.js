@@ -25,7 +25,7 @@ const getters = {
 
 const actions = {
 	login: ({commit}, authData) => {
-		axios.post('/login', {
+		axios.post('http://localhost:8081/auth', {
 			username: authData.username,
 			password: authData.password,
 		}).then(response => {

@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
 
 	if (to.path === '/login') {
 		if (token) {
-			axiosAuth.post('/verify-token').then(() => {
+			axiosAuth.get('/verify-token').then(() => {
 				next('/dashboard');
 			}).catch(() => {
 				next();
@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
 	}
 
 	if (requireAuth && token) {
-		axiosAuth.post('/verify-token').then(() => {
+		axiosAuth.get('/verify-token').then(() => {
 			next();
 		}).catch(() => {
 			next('/login');

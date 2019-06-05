@@ -4,7 +4,8 @@ import time
 import connexion
 import six
 from werkzeug.exceptions import Unauthorized
-
+from flask_cors import CORS
+from flask import request
 from jose import JWTError, jwt
 
 JWT_ISSUER = 'smarthomeautomation'
@@ -12,17 +13,19 @@ JWT_SECRET = 'asdfasdfasdfasdfasdfasdfasdfasdfasdfa'
 JWT_LIFETIME_SECONDS = 600
 JWT_ALGORITHM = 'HS256'
 
-
-def generate_token(user_id):
+def generate_token():
+    # AUTHENTICATION LOGIC GOES HERE
     timestamp = _current_timestamp()
     payload = {
         "iss": JWT_ISSUER,
         "iat": int(timestamp),
         "exp": int(timestamp + JWT_LIFETIME_SECONDS),
-        "sub": str(user_id),
+        "sub": str(request.username),
     }
 
-    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return { "success": True,
+             "token": jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+             }
 
 
 def decode_token(token):
@@ -45,5 +48,6 @@ def _current_timestamp() -> int:
 
 if __name__ == '__main__':
     app = connexion.FlaskApp(__name__)
+    CORS(app.app)
     app.add_api('openapi.yaml')
     app.run(port=8081)

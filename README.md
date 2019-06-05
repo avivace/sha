@@ -1,5 +1,7 @@
 # Smart Home Automation
 
+Design Lab project. 2018/2019. Marco Belotti, Francesco Bombarda, Antonio Vivace.
+
 ## Backend
 
 Requirements: Python3. On Debian: `apt install python3`

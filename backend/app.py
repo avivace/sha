@@ -1,32 +1,39 @@
 #!/usr/bin/env python3
-import time
 
+import time
 import connexion
 import six
 from werkzeug.exceptions import Unauthorized
 from flask_cors import CORS
 from flask import request
 from jose import JWTError, jwt
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+from models import User
+
+
 
 JWT_ISSUER = 'smarthomeautomation'
 JWT_SECRET = 'asdfasdfasdfasdfasdfasdfasdfasdfasdfa'
 JWT_LIFETIME_SECONDS = 600
 JWT_ALGORITHM = 'HS256'
 
-def generate_token():
-    # AUTHENTICATION LOGIC GOES HERE
+
+def login():
+    request.username
+    request.password
+
+def generate_token(username):
     timestamp = _current_timestamp()
     payload = {
         "iss": JWT_ISSUER,
         "iat": int(timestamp),
         "exp": int(timestamp + JWT_LIFETIME_SECONDS),
-        "sub": str(request.username),
+        "sub": str(username),
     }
-
-    return { "success": True,
-             "token": jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-             }
-
+    
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 def decode_token(token):
     try:

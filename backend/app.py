@@ -8,11 +8,7 @@ from flask_cors import CORS
 from flask import request
 from jose import JWTError, jwt
 from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
-from models import User
-
-
+from config import Config
 
 JWT_ISSUER = 'smarthomeautomation'
 JWT_SECRET = 'asdfasdfasdfasdfasdfasdfasdfasdfasdfa'
@@ -53,8 +49,19 @@ def _current_timestamp() -> int:
     return int(time.time())
 
 
-if __name__ == '__main__':
-    app = connexion.FlaskApp(__name__)
-    CORS(app.app)
-    app.add_api('openapi.yaml')
-    app.run(port=8081)
+db = SQLAlchemy()
+
+def run(config_class=Config):
+    connex_app = connexion.FlaskApp(__name__)
+    app = connex_app.app
+    app.config.from_object(config_class)
+    CORS(app)
+    connex_app.add_api('openapi.yaml')
+    connex_app.run(port=8081)
+    db.init_app(app)
+
+    return app
+
+import models
+
+run()

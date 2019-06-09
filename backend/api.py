@@ -11,12 +11,13 @@ JWT_ALGORITHM = 'HS256'
 
 
 def login():
+
     data = request.get_json()
     user = User.query.filter_by(
         username=data["username"], is_active=True).first()
 
     if user is None or not user.check_password(data["password"]):
-        return 400
+        return "Authentication error", 401
     else:
         return {"success": True, "token": generate_token(data["username"])}
 

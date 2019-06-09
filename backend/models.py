@@ -4,7 +4,7 @@ from time import time
 from hashlib import md5
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from db import db
+from app import db
 
 followers = db.Table(
     'followers',

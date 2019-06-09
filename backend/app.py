@@ -7,7 +7,6 @@ from jose import JWTError, jwt
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from flask_migrate import Migrate
-from db import db
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()

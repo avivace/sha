@@ -13,6 +13,11 @@ followers = db.Table(
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+def hash_password(password):
+    salt = "1234780asa231"
+    fullstring = password + salt;
+    return sha512(fullstring.encode('utf-8')).hexdigest()
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -48,7 +53,7 @@ class User(db.Model):
         return '<User {}>'.format(self.username)
 
     def set_password(self, password):
-        self.password_hash = sha512(password.encode('utf-8')).hexdigest()
+        self.password_hash = hash_password(password)
         #generate_password_hash(password=password,method='pbkdf2:sha1',)
 
     def check_password(self, password):

@@ -40,7 +40,7 @@
 			onSubmit() {
 				let formData = {
 					username: this.username,
-					password: sha512(this.password),
+					password: sha512(this.password + "1234780asa231"),
 				}
 
 				this.$store.dispatch('auth/login', formData).then(() => {

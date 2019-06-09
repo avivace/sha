@@ -26,6 +26,7 @@
 
 <script>
 	import axios from 'axios'
+	import sha512 from 'js-sha512'
 
 	export default {
 		data() {
@@ -39,7 +40,7 @@
 			onSubmit() {
 				let formData = {
 					username: this.username,
-					password: this.password,
+					password: sha512(this.password),
 				}
 
 				this.$store.dispatch('auth/login', formData).then(() => {

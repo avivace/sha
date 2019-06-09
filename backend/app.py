@@ -3,7 +3,6 @@ import connexion
 import six
 from werkzeug.exceptions import Unauthorized
 from flask_cors import CORS
-from jose import JWTError, jwt
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from flask_migrate import Migrate

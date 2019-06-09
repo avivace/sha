@@ -7,7 +7,7 @@ paths:
   /auth:
     post:
       summary: Return JWT token
-      operationId: app.generate_token
+      operationId: api.login
       requestBody:
         required: true
         content:
@@ -28,7 +28,7 @@ paths:
   /verify-token:
     get:
       summary: Return secret string
-      operationId: app.get_secret
+      operationId: api.get_secret
       responses:
         '200':
           description: secret response
@@ -45,4 +45,4 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      x-bearerInfoFunc: app.decode_token
+      x-bearerInfoFunc: api.decode_token

@@ -2,7 +2,15 @@
 
 Design Lab project. 2018/2019. Marco Belotti, Francesco Bombarda, Antonio Vivace.
 
-## Backend
+## Documentation
+
+- [Requisiti]()
+- [Architettura]()
+- [Implementazione]()
+
+## Deploy
+
+### Backend
 
 Requirements: Python3. On Debian: `apt install python3`
 
@@ -15,13 +23,13 @@ pip3 install connexion[swagger-ui]
 python3 app.py
 ```
 
-### Auth
+#### Auth
 ```bash
 curl -X GET "http://localhost:8080/secret" -H  "accept: text/plain" -H
  "Authorization: Bearer $TOKEN"
 ```
 
-## Frontend
+### Frontend
 
 Requirements: Node.js and npm. 
 

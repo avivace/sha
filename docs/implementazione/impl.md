@@ -48,4 +48,68 @@ In particolare:
 
 ## Panoramica degli strumenti
 
+#### JWT
+
+TODO
+
+- [RFC 7515](https://tools.ietf.org/html/rfc7515) - JSON Web Signature (JWS)
+- [RFC 7516](https://tools.ietf.org/html/rfc7516) - JSON Web Encryption (JWE)
+- [RFC 7519](https://tools.ietf.org/html/rfc7519) - JSON Web Token (JWT)
+
+
+#### Open API 3.0
+
+TODO
+
+- [OpenAPI Specification, version 3.0.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md)
+
+#### Flask
+
+TODO
+
+#### Connexion
+
+TODO
+
+#### SQLite
+
+TODO
+
+#### SQLAlchemy
+
+TODO
+
+#### Node.js
+
+TODO
+
+#### Webpack
+
+TODO
+
+#### Vue.JS
+
+TODO
+
+#### Axios
+
+TODO
+
+#### Bootstrap-Vue
+
+TODO
+
+#### Testing(?)
+
+TODO
+
+
 ## Deploy del software
+
+### Backend
+
+TODO
+
+### Frontend
+
+TODO

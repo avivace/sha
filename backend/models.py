@@ -166,6 +166,8 @@ class Attuatore(db.Model):
     description = db.Column(db.String(120), index=False, unique=False)
     type = db.Column(db.String(64), index=False, unique=False)
     pin = db.Column(db.Integer, index=False, unique=True)
+    status = db.Column(db.Boolean, index=True, unique=False)
+
     stanza_id = db.Column(db.Integer, db.ForeignKey('stanza.id'))
 
     def __repr__(self):

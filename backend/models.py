@@ -169,7 +169,8 @@ class Attuatore(db.Model):
     status = db.Column(db.Boolean, index=True, unique=False)
 
     stanza_id = db.Column(db.Integer, db.ForeignKey('stanza.id'))
-
+    def toggle(self):
+        self.status = not self.status
     def __repr__(self):
         return '<Attuatore {}>'.format(self.description)
 

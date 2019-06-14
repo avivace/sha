@@ -25,6 +25,35 @@ paths:
             'text/plain':
               schema:
                 type: string
+  /add-device:
+    post:
+      summary: Add device
+      operationId: api.add_device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                topic:
+                  type: string
+                description:
+                  type: string
+                type:
+                  type: string
+                pin:
+                  type: number
+                stanza_id:
+                  type: number
+      responses:
+        '200':
+          description: Outcome
+          content:
+            'text/plain':
+              schema:
+                type: string  
+      security:
+        - jwt: ['secret']
   /verify-token:
     get:
       summary: Return secret string

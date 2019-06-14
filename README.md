@@ -10,6 +10,16 @@ Design Lab project. 2018/2019. Marco Belotti, Francesco Bombarda, Antonio Vivace
 
 ## Deploy
 
+### MQTT
+
+On Debian:
+```
+apt install mqtt mqtt-clients
+service mqtt stop
+mqtt
+mosquitto_sub -h '127.0.0.1' -t '#'
+```
+
 ### Backend
 
 Requirements: Python3. On Debian: `apt install python3`

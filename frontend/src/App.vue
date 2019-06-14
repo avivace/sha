@@ -18,3 +18,10 @@
     
   }
 </script>
+
+<style>
+body {
+  font-family: 'Inter';
+  font-weight: 400
+}  
+</style>}

@@ -1,9 +1,11 @@
 <template>
-  <b-navbar toggleable type="light" variant="light" class="mb-5">
-    <b-navbar-toggle target="nav_text_collapse"></b-navbar-toggle>
-    <b-navbar-brand>Smart Home Automation</b-navbar-brand>
-  
-    <b-collapse is-nav id="nav_text_collapse">
+  <div>
+    <b-navbar toggleable="lg" type="dark" variant="dark">
+    <b-navbar-brand href="#">Smart Home Automation</b-navbar-brand>
+
+    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+    <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
         <b-nav-text>
           <router-link to="/" class="nav-link">Home</router-link>
@@ -15,15 +17,23 @@
           <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
         </b-nav-text>
       </b-navbar-nav>
-  
-      <b-navbar-nav v-if="isAuth" class="ml-auto">
-        <b-nav-item-dropdown text="" right>
-          <b-dropdown-item href="#">Account</b-dropdown-item>
-          <b-dropdown-item href="#" @click="onLogout">Logout</b-dropdown-item>
+
+      <!-- Right aligned nav items -->
+      <b-navbar-nav class="ml-auto">
+
+
+        <b-nav-item-dropdown right v-if="isAuth">
+          <!-- Using 'button-content' slot -->
+          <template slot="button-content"><em>User</em></template>
+          <!--<b-dropdown-item href="#">Profile</b-dropdown-item>-->
+          <b-dropdown-item href="#" @click="onLogout">Sign Out</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
+
+
+</div>
 </template>
 
 <script>

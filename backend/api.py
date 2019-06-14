@@ -10,8 +10,8 @@ JWT_SECRET = 'asdfasdfasdfasdfasdfasdfasdfasdfasdfa'
 JWT_LIFETIME_SECONDS = 600
 JWT_ALGORITHM = 'HS256'
 
-
-
+client = mqttc.Client()
+client.connect("127.0.0.1", 1883, 60)
 
 # Utilities
 def _current_timestamp() -> int:
@@ -92,9 +92,6 @@ def get_topics():
 def mqtt_publish(id, value):
     att = Attuatore.query.filter_by(id=id).first()
     stanza = Stanza.query.filter_by(id=att.stanza_id).first()
-    client = mqttc.Client()
-    client.connect("127.0.0.1", 1883, 60)
     topic = str(stanza.piano_id) + '/' + str(stanza.id) + '/' + str(id)
     client.publish(topic, value)
-
     return "OK"

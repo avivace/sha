@@ -52,7 +52,13 @@ paths:
       responses:
         '200':
           description: Response
-  
+  /overview:
+    get:
+      summary: Publish
+      operationId: api.overview
+      responses:
+        '200':
+          description: Response
   /add-device:
     post:
       summary: Add device

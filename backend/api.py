@@ -70,6 +70,42 @@ def add_device():
     db.session.commit()
     return "OK"
 
+def overview():
+    piani = Piano.query.all()
+
+    pianiArray = []
+    stanzeArray = []
+    attuatoriArray = []
+
+    for piano in piani:
+        pianoObj = {}
+        pianoObj['id'] = piano.id
+        pianoObj['description'] = piano.description
+        stanze = Stanza.query.filter_by(piano_id=piano.id).all()
+        for stanza in stanze:
+            stanzaObj = {}
+            stanzaObj['id'] = stanza.id
+            stanzaObj['description'] = stanza.description
+            attuatori = Attuatore.query.filter_by(stanza_id=stanza.id)
+            for attuatore in attuatori:
+                attuatoreObj = {}
+                attuatoreObj['id'] = attuatore.id
+                attuatoreObj['pin'] = attuatore.pin
+                attuatoreObj['type'] = attuatore.type
+                attuatoreObj['status'] = int(attuatore.status)
+                attuatoreObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
+                attuatoreObj['description'] = attuatore.description
+                attuatoriArray.append(attuatoreObj)
+            stanzaObj['attuatori'] = attuatoriArray
+            stanzeArray.append(stanzaObj)
+            attuatoriArray = []
+        pianoObj['stanze'] = stanzeArray
+        pianiArray.append(pianoObj)
+        stanzeArray = []
+
+    return pianiArray
+
+
 # Restituisce l'elenco di tutti i topic associati ad attuatori di tipo lampada
 def get_topics():
     piani = Piano.query.all()

@@ -127,6 +127,9 @@ def get_topics():
 
 def mqtt_publish(id, value):
     att = Attuatore.query.filter_by(id=id).first()
+    att.toggle()
+    #value = [1,0][int(value)]
+    db.session.commit()
     stanza = Stanza.query.filter_by(id=att.stanza_id).first()
     topic = str(stanza.piano_id) + '/' + str(stanza.id) + '/' + str(id)
     client.publish(topic, value)

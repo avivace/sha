@@ -25,6 +25,34 @@ paths:
             'text/plain':
               schema:
                 type: string
+  /get-topics:
+    get:
+      summary: Restituisce l'elenco di tutti i topic associati ad attuatori di tipo lampada
+      operationId: api.get_topics
+      responses:
+        '200':
+          description: Response
+  /publish/{id}/{value}:
+    get:
+      summary: Publish
+      operationId: api.mqtt_publish
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+        - name: value
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Response
+  
   /add-device:
     post:
       summary: Add device
@@ -52,8 +80,8 @@ paths:
             'text/plain':
               schema:
                 type: string  
-      security:
-        - jwt: ['secret']
+#      security:
+#        - jwt: ['secret']
   /verify-token:
     get:
       summary: Return secret string

@@ -53,7 +53,8 @@ body {
 
 .navbar-brand{
   font-size:1.65rem;
-  letter-spacing: -1px;
+  letter-spacing: 1px;
   font-weight: 300;
+  text-transform: uppercase;
 }
 </style>}

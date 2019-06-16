@@ -4,9 +4,13 @@ import router from '@/router'
 const state = {
 	username: null,
 	token: null,
+	loading: false
 };
 
 const mutations = {
+	setLoading(state, value) {
+		state.loading = value;
+	},
 	authUser(state, userData) {
 		state.username = userData.username;
 		state.token = userData.token;
@@ -18,6 +22,9 @@ const mutations = {
 };
 
 const getters = {
+	isLoading(state) {
+		return state.loading
+	},
 	isAuthenticated(state) {
 		return state.token !== null;
 	},

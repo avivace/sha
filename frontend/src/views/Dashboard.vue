@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<center>
+			  <b-spinner v-if="loading" label="Spinning"></b-spinner>
 			<template v-for="piano in overview">
 				<h3>{{ piano.description }}</h3>
 
@@ -97,7 +98,7 @@
 			<b-form-group id="input-group-2" label="Piano:" label-for="input-2">
 				<b-form-select
 					id="input-2"
-					v-model="form.piano"
+					v-model="formStanza.piano_id"
 					@change="onChangePiano()"
 					:options="
 						overview.map(element => {
@@ -114,7 +115,7 @@
 					style="margin-left:10px"
 					variant="primary"
 					class="float-right"
-					@click="addPiano"
+					@click="addStanza"
 				>
 					Conferma
 				</b-button>
@@ -247,6 +248,7 @@ import axiosAuth from "@/api/axios-auth";
 export default {
 	data() {
 		return {
+			loading: false,
 			modal: false,
 			modalstanza: false,
 			modalpiano: false,
@@ -282,8 +284,18 @@ export default {
 				}
 			});
 		},
-		addStanza() {},
-		addPiano() {},
+		addStanza() {
+			axiosAuth.post("/add-stanza", this.formStanza).then(response => {
+				this.getStatus();
+				this.modalstanza = false;
+			})
+		},
+		addPiano() {
+			axiosAuth.post("/add-piano", this.formPiano).then(response => {
+				this.getStatus();
+				this.modalpiano = false;
+			})
+		},
 		onSubmit() {
 			console.log("submitted form");
 			this.form.pin = parseInt(this.form.pin);
@@ -303,10 +315,13 @@ export default {
 			});
 		},
 		getStatus() {
+			console.log(this.$store)
+			this.$store.commit('auth/setLoading', 1)
 			console.log("status");
 			axiosAuth.get("/overview").then(response => {
 				// handle success
 				this.overview = response.data;
+				this.$store.commit('auth/setLoading', 0)
 			});
 		}
 	},

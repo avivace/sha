@@ -1,7 +1,8 @@
 <template>
   <div>
+
     <b-navbar toggleable="lg" type="dark" variant="dark">
-    <b-navbar-brand href="#">Smart Home Automation</b-navbar-brand>
+    <b-navbar-brand href="#">Smart Home Automation  <b-spinner v-if="loading" type="grow" label="Loading..."></b-spinner></b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -44,6 +45,7 @@
     computed: {
       ...mapGetters('auth', {
         isAuth: 'isAuthenticated',
+        loading: 'isLoading'
       })
     },
     methods: {

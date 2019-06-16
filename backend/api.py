@@ -67,6 +67,14 @@ def add_stanza():
     db.session.commit()
     return "OK"
 
+def add_piano():
+    data = request.get_json()
+    piano = Piano(topic="deprecated",
+                  description=data["description"])
+    db.session.add(piano)
+    db.session.commit()
+    return "OK"
+
 def add_device():
     data = request.get_json()
     device = Attuatore(topic="deprecated",

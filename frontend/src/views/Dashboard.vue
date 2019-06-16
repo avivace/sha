@@ -22,8 +22,10 @@
 										<template
 											v-for="attuatore in stanza.attuatori"
 										>
+										<div class="col-md-4">
 											<b-card
-												style="max-width: 15rem;"
+
+												style=""
 												bg-variant="default"
 												text-variant="black"
 												class="text-center"
@@ -65,7 +67,7 @@
 														}}</code
 													>
 												</b-card-text>
-											</b-card>
+											</b-card></div>
 										</template>
 									
 								</b-card-group>

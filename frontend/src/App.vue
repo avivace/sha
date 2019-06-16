@@ -27,4 +27,18 @@ body {
 .h1 .h2 .h3 h1 h2 h3{
   font-weight: 400
 }
+
+.badge {
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.card {
+  margin: 25px;
+}
+
+.col-md-4 {
+  padding:0;
+}
 </style>}

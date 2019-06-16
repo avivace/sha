@@ -56,16 +56,17 @@
 				</template>
 			</template>
 		</center>
+
 		<b-modal id="modal-1" title="Aggiungi Dispositivo">
 			<b-form @submit="onSubmit">
 				<b-form-group
 					id="input-group-1"
-					label="Nome:"
+					label="PIN:"
 					label-for="input-1"
 				>
 					<b-form-input
 						id="input-2"
-						v-model="form.namel"
+						v-model="form.pin"
 					></b-form-input>
 				</b-form-group>
 				<b-form-group
@@ -75,11 +76,37 @@
 				>
 					<b-form-input
 						id="input-2"
-						v-model="form.descrizione"
+						v-model="form.description"
 					></b-form-input>
+				</b-form-group>
+				<b-form-group
+					id="input-group-2"
+					label="Piano:"
+					label-for="input-2"
+				>
+					<b-form-select
+						id="input-2"
+						v-model="form.stanza"
+						:options='overview.map(element => { 
+							return { "text": element["description"],
+									 "value": element["id"]}
+									})'
+					></b-form-select>
+				</b-form-group>
+				<b-form-group
+					id="input-group-2"
+					label="Stanza:"
+					label-for="input-2"
+				>
+					<b-form-select
+						id="input-2"
+						v-model="form.stanza"
+						:options="this.form.stanza"
+					></b-form-select>
 				</b-form-group>
 			</b-form>
 		</b-modal>
+
 	</div>
 </template>
 
@@ -91,10 +118,9 @@ export default {
 		return {
 			overview: [],
 			form: {
-				name: "",
 				description: "",
 				pin: "",
-				type: ""
+				stanza: ""
 			}
 		};
 	},

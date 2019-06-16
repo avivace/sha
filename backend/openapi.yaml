@@ -112,7 +112,7 @@ paths:
   /add-piano:
     post:
       summary: Add stanza
-      operationId: api.add_stanza
+      operationId: api.add_piano
       requestBody:
         required: true
         content:

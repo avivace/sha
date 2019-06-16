@@ -60,7 +60,7 @@ def get_secret(user, token_info) -> str:
 
 def add_stanza():
     data = request.get_json()
-    stanza = Stanza(topic="deprecated",
+    stanza = Stanza(#topic="deprecated",
                     description=data["description"],
                     piano_id=data["piano_id"])
     db.session.add(stanza)
@@ -69,7 +69,7 @@ def add_stanza():
 
 def add_piano():
     data = request.get_json()
-    piano = Piano(topic="deprecated",
+    piano = Piano(#topic="deprecated",
                   description=data["description"])
     db.session.add(piano)
     db.session.commit()
@@ -77,11 +77,11 @@ def add_piano():
 
 def add_device():
     data = request.get_json()
-    device = Attuatore(topic="deprecated",
+    device = Attuatore(#topic="deprecated",
                        description=data["description"],
                        type=data["type"],
                        pin=data["pin"],
-                       stanza_id=1,
+                       stanza_id=data["stanza"],
                        status=0)
     db.session.add(device)
     db.session.commit()
@@ -110,7 +110,7 @@ def overview():
                 attuatoreObj['pin'] = attuatore.pin
                 attuatoreObj['type'] = attuatore.type
                 attuatoreObj['status'] = int(attuatore.status)
-                attuatoreObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
+                #attuatoreObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
                 attuatoreObj['description'] = attuatore.description
                 attuatoriArray.append(attuatoreObj)
             stanzaObj['attuatori'] = attuatoriArray

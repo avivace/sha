@@ -61,11 +61,12 @@ def get_secret(user, token_info) -> str:
 def add_device():
     data = request.get_json()
     print(data)
-    device = Attuatore(topic=data["topic"],
+    device = Attuatore(topic="deprecated",
                        description=data["description"],
                        type=data["type"],
                        pin=data["pin"],
-                       stanza_id=1)
+                       stanza_id=1,
+                       status=0)
     db.session.add(device)
     db.session.commit()
     return "OK"

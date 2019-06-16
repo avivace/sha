@@ -3,65 +3,85 @@
 		<center>
 			<template v-for="piano in overview">
 				<h3>{{ piano.description }}</h3>
-				
+
 				<template v-for="stanza in piano.stanze">
-					<div class="mt-3">
-															<b-card
-										style="max-width: 80%;"
-										border-variant="light"
-										bg-variant="light"
-										text-variant="black"
-										:header="stanza.description "
-										class="text-center"
-										align="center"
-									>
-										<b-card-text
-											>
-												
-											
+					<div>
+						<b-card
+							style="max-width: 80%;"
+							border-variant="light"
+							bg-variant="light"
+							text-variant="black"
+							:header="stanza.description"
+							class="text-center"
+							align="center"
+						>
+							<b-card-text>
+
+								<b-card-group deck>
 									
-						
-						<b-card-group deck>
-							<center>
-								<template v-for="attuatore in stanza.attuatori">
-									<b-card
-										style="max-width: 15rem;"
-										bg-variant="default"
-										text-variant="black"
-										
-										class="text-center"
-										align="center"
-									>
-									<b-card-title>
-										{{ attuatore.description }}
-									</b-card-title>
-										<b-card-text
-											>
-											<b-button squared class="fsloat-right" :variant='["outline-danger","success"][attuatore.status]' @click="toggle(attuatore.id,attuatore.status)">{{["OFF","ON"][attuatore.status]}}</b-button>
-											<br><br>
-											<b-badge>{{attuatore.type}}</b-badge>
-											
-												PIN<code> {{attuatore.pin}}</code>
-											</b-card-text
+										<template
+											v-for="attuatore in stanza.attuatori"
 										>
-									</b-card>
-								</template>
-							</center>
-						</b-card-group>
-					</b-card-text>
+											<b-card
+												style="max-width: 15rem;"
+												bg-variant="default"
+												text-variant="black"
+												class="text-center"
+												align="center"
+											>
+												<b-card-title>
+													{{ attuatore.description }}
+												</b-card-title>
+												<b-card-text>
+													<b-button
+														squared
+														class="fsloat-right"
+														:variant="
+															[
+																'outline-danger',
+																'success'
+															][attuatore.status]
+														"
+														@click="
+															toggle(
+																attuatore.id,
+																attuatore.status
+															)
+														"
+														>{{
+															["OFF", "ON"][
+																attuatore.status
+															]
+														}}</b-button
+													>
+													<br /><br />
+													<b-badge>{{
+														attuatore.type
+													}}</b-badge>
+
+													PIN<code>
+														{{
+															attuatore.pin
+														}}</code
+													>
+												</b-card-text>
+											</b-card>
+										</template>
+									
+								</b-card-group>
+
+							</b-card-text>
 						</b-card>
 					</div>
 				</template>
 			</template>
 
-						<b-button v-b-modal.modal-1>Aggiungi Dispositivo</b-button>&nbsp;
-			<b-button v-b-modal.modal-1>Aggiungi Piano</b-button>&nbsp;
+			<b-button @click="modal = true">Aggiungi Dispositivo</b-button
+			>&nbsp; <b-button v-b-modal.modal-1>Aggiungi Piano</b-button>&nbsp;
 			<b-button v-b-modal.modal-1>Aggiungi Camera</b-button>
-
-
 		</center>
 
-		<b-modal id="modal-1" title="Aggiungi Dispositivo">
+		<b-modal v-model="modal" id="modal-1" title="Aggiungi Dispositivo">
 			<b-form @submit="onSubmit">
 				<b-form-group
 					id="input-group-1"
@@ -71,6 +91,7 @@
 					<b-form-input
 						id="input-2"
 						v-model="form.pin"
+						type="number"
 					></b-form-input>
 				</b-form-group>
 				<b-form-group
@@ -92,13 +113,15 @@
 						id="input-2"
 						v-model="form.piano"
 						@change="onChangePiano()"
-						:options='overview.map((element) => { 
-							return { "text": element["description"],
-									 "value": element["id"]}
-									})'
-
+						:options="
+							overview.map(element => {
+								return {
+									text: element['description'],
+									value: element['id']
+								};
+							})
+						"
 					></b-form-select>
-					{{ form }}
 				</b-form-group>
 				<b-form-group
 					id="input-group-2"
@@ -112,8 +135,24 @@
 					></b-form-select>
 				</b-form-group>
 			</b-form>
+			<div slot="modal-footer" class="w-100">
+				<b-button
+					variant="primary"
+					class="float-right"
+					@click="onSubmit"
+				>
+					Conferma
+				</b-button>
+				&nbsp;
+				<b-button
+					variant="primary"
+					class="float-right"
+					@click="modal = false"
+				>
+					Annulla
+				</b-button>
+			</div>
 		</b-modal>
-
 	</div>
 </template>
 
@@ -123,42 +162,48 @@ import axiosAuth from "@/api/axios-auth";
 export default {
 	data() {
 		return {
+			modal: false,
 			stanzaOptions: [],
 			overview: [],
 			form: {
 				description: "",
 				pin: "",
-				stanza: ""
+				stanza: "",
+				type: "attuatore"
 			}
 		};
 	},
 	methods: {
-		onChangePiano(){
-			self = this
-			this.overview.forEach((piano) => {
-				if (self.form.piano == piano.id){
-					console.log(piano.stanze)
-					self.stanzaOptions = piano.stanze.map((element) => {
-						return { "text": element["description"],
-								 "value": element["id"]}
-					})
+		onChangePiano() {
+			self = this;
+			this.overview.forEach(piano => {
+				if (self.form.piano == piano.id) {
+					console.log(piano.stanze);
+					self.stanzaOptions = piano.stanze.map(element => {
+						return {
+							text: element["description"],
+							value: element["id"]
+						};
+					});
 				}
-
-			})
+			});
 		},
-		onSubmit(){
-			console.log(this.form)
+		onSubmit() {
+			console.log("submitted form");
+			this.form.pin = parseInt(this.form.pin);
+			axiosAuth.post("/add-device", this.form).then(response => {
+				this.getStatus();
+				this.modal = false;
+			});
 		},
-		toggle(id,status){
-			console.log(id,status)
+		toggle(id, status) {
+			console.log(id, status);
 			// Invert!
 			// Send 0 to turn on, 1 to turn off
-			if (status)
-				status = 0
-			else
-				status = 1
-			axiosAuth.get("/publish/"+id+"/"+status)
-			this.getStatus()
+			if (status) status = 0;
+			else status = 1;
+			axiosAuth.get("/publish/" + id + "/" + status);
+			this.getStatus();
 		},
 		getStatus() {
 			console.log("status");

@@ -139,6 +139,7 @@
 			</b-form>
 			<div slot="modal-footer" class="w-100">
 				<b-button
+					style="margin-left:10px"
 					variant="primary"
 					class="float-right"
 					@click="onSubmit"
@@ -147,7 +148,8 @@
 				</b-button>
 				&nbsp;
 				<b-button
-					variant="primary"
+					style="margin-left:10px"
+					variant="outline-primary"
 					class="float-right"
 					@click="modal = false"
 				>

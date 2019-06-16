@@ -22,7 +22,9 @@
 <style>
 body {
   font-family: 'Rubik';
-  font-weight: 400
+  font-weight: 400;
+  letter-spacing: -1px;
+  font-size:1.15rem;
 }
 .h1 .h2 .h3 h1 h2 h3{
   font-weight: 400
@@ -34,11 +36,24 @@ body {
   text-transform: uppercase;
 }
 
+.btn {
+  font-size:1.25rem;
+}
 .card {
   margin: 25px;
 }
 
 .col-md-4 {
   padding:0;
+}
+
+.card-header{
+  font-size:1.35rem;
+}
+
+.navbar-brand{
+  font-size:1.65rem;
+  letter-spacing: -1px;
+  font-weight: 300;
 }
 </style>}

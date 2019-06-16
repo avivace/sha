@@ -5,22 +5,23 @@ from werkzeug.exceptions import Unauthorized
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-migrate = Migrate()
 
 
 def initConnexApp(config_class=Config):
+    # Create Connexion App
     connex_app = connexion.FlaskApp(__name__)
+    # Expose the wrapped FlaskApp object
     app = connex_app.app
+    # Apply our configuration
     app.config.from_object(config_class)
+    # Enable CORS for everything
     CORS(app)
+    # Add our defined API
     connex_app.add_api('openapi.yaml')
-
+    # Get the DB up and running
     db.init_app(app)
-    migrate.init_app(app, db)
 
     return connex_app
 

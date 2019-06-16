@@ -16,15 +16,12 @@
 							align="center"
 						>
 							<b-card-text>
-
 								<b-card-group deck>
-									
-										<template
-											v-for="attuatore in stanza.attuatori"
-										>
+									<template
+										v-for="attuatore in stanza.attuatori"
+									>
 										<div class="col-md-4">
 											<b-card
-
 												style=""
 												bg-variant="default"
 												text-variant="black"
@@ -67,11 +64,10 @@
 														}}</code
 													>
 												</b-card-text>
-											</b-card></div>
-										</template>
-									
+											</b-card>
+										</div>
+									</template>
 								</b-card-group>
-
 							</b-card-text>
 						</b-card>
 					</div>
@@ -79,9 +75,94 @@
 			</template>
 
 			<b-button @click="modal = true">Aggiungi Dispositivo</b-button
-			>&nbsp; <b-button v-b-modal.modal-1>Aggiungi Piano</b-button>&nbsp;
-			<b-button v-b-modal.modal-1>Aggiungi Camera</b-button>
+			>&nbsp;
+			<b-button @click="modalpiano = true">Aggiungi Piano</b-button>&nbsp;
+			<b-button @click="modalstanza = true">Aggiungi Camera</b-button>
+			<br />
 		</center>
+
+		<b-modal v-model="modalstanza" id="modal-3" title="Aggiungi Stanza">
+			<b-form @submit="addStanza">
+				<b-form-group
+					id="input-group-2"
+					label="Descrizione:"
+					label-for="input-2"
+				>
+					<b-form-input
+						id="input-2"
+						v-model="formStanza.description"
+					></b-form-input>
+				</b-form-group>
+			</b-form>
+			<b-form-group id="input-group-2" label="Piano:" label-for="input-2">
+				<b-form-select
+					id="input-2"
+					v-model="form.piano"
+					@change="onChangePiano()"
+					:options="
+						overview.map(element => {
+							return {
+								text: element['description'],
+								value: element['id']
+							};
+						})
+					"
+				></b-form-select>
+			</b-form-group>
+			<div slot="modal-footer" class="w-100">
+				<b-button
+					style="margin-left:10px"
+					variant="primary"
+					class="float-right"
+					@click="addPiano"
+				>
+					Conferma
+				</b-button>
+				&nbsp;
+				<b-button
+					style="margin-left:10px"
+					variant="outline-primary"
+					class="float-right"
+					@click="modalstanza = false"
+				>
+					Annulla
+				</b-button>
+			</div>
+		</b-modal>
+
+		<b-modal v-model="modalpiano" id="modal-2" title="Aggiungi Piano">
+			<b-form @submit="onSubmit">
+				<b-form-group
+					id="input-group-2"
+					label="Descrizione:"
+					label-for="input-2"
+				>
+					<b-form-input
+						id="input-2"
+						v-model="formPiano.description"
+					></b-form-input>
+				</b-form-group>
+			</b-form>
+			<div slot="modal-footer" class="w-100">
+				<b-button
+					style="margin-left:10px"
+					variant="primary"
+					class="float-right"
+					@click="addPiano"
+				>
+					Conferma
+				</b-button>
+				&nbsp;
+				<b-button
+					style="margin-left:10px"
+					variant="outline-primary"
+					class="float-right"
+					@click="modalpiano = false"
+				>
+					Annulla
+				</b-button>
+			</div>
+		</b-modal>
 
 		<b-modal v-model="modal" id="modal-1" title="Aggiungi Dispositivo">
 			<b-form @submit="onSubmit">
@@ -167,8 +248,17 @@ export default {
 	data() {
 		return {
 			modal: false,
+			modalstanza: false,
+			modalpiano: false,
 			stanzaOptions: [],
 			overview: [],
+			formPiano: {
+				description: ""
+			},
+			formStanza: {
+				description: "",
+				piano_id: ""
+			},
 			form: {
 				description: "",
 				pin: "",
@@ -192,6 +282,8 @@ export default {
 				}
 			});
 		},
+		addStanza() {},
+		addPiano() {},
 		onSubmit() {
 			console.log("submitted form");
 			this.form.pin = parseInt(this.form.pin);

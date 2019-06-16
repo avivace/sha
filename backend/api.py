@@ -58,9 +58,17 @@ def get_secret(user, token_info) -> str:
     '''.format(
         user=user, token_info=token_info)
 
+def add_stanza():
+    data = request.get_json()
+    stanza = Stanza(topic="deprecated",
+                    description=data["description"],
+                    piano_id=data["piano_id"])
+    db.session.add(stanza)
+    db.session.commit()
+    return "OK"
+
 def add_device():
     data = request.get_json()
-    print(data)
     device = Attuatore(topic="deprecated",
                        description=data["description"],
                        type=data["type"],

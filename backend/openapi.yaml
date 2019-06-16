@@ -85,6 +85,29 @@ paths:
           content:
             'text/plain':
               schema:
+                type: string
+  /add-stanza:
+    post:
+      summary: Add device
+      operationId: api.add_stanza
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                piano_id:
+                  type: number
+                description:
+                  type: string
+                type:
+                  type: string
+      responses:
+        '200':
+          description: Outcome
+          content:
+            'text/plain':
+              schema:
                 type: string  
 #      security:
 #        - jwt: ['secret']

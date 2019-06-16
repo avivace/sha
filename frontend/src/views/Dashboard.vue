@@ -1,8 +1,6 @@
 <template>
 	<div>
 		<center>
-			<b-button v-b-modal.modal-1>Aggiungi Dispositivo</b-button>
-
 			<template v-for="piano in overview">
 				<h3>{{ piano.description }}</h3>
 				
@@ -55,6 +53,12 @@
 					</div>
 				</template>
 			</template>
+
+						<b-button v-b-modal.modal-1>Aggiungi Dispositivo</b-button>&nbsp;
+			<b-button v-b-modal.modal-1>Aggiungi Piano</b-button>&nbsp;
+			<b-button v-b-modal.modal-1>Aggiungi Camera</b-button>
+
+
 		</center>
 
 		<b-modal id="modal-1" title="Aggiungi Dispositivo">
@@ -86,12 +90,15 @@
 				>
 					<b-form-select
 						id="input-2"
-						v-model="form.stanza"
-						:options='overview.map(element => { 
+						v-model="form.piano"
+						@change="onChangePiano()"
+						:options='overview.map((element) => { 
 							return { "text": element["description"],
 									 "value": element["id"]}
 									})'
+
 					></b-form-select>
+					{{ form }}
 				</b-form-group>
 				<b-form-group
 					id="input-group-2"
@@ -101,7 +108,7 @@
 					<b-form-select
 						id="input-2"
 						v-model="form.stanza"
-						:options="this.form.stanza"
+						:options="stanzaOptions"
 					></b-form-select>
 				</b-form-group>
 			</b-form>
@@ -116,6 +123,7 @@ import axiosAuth from "@/api/axios-auth";
 export default {
 	data() {
 		return {
+			stanzaOptions: [],
 			overview: [],
 			form: {
 				description: "",
@@ -125,6 +133,19 @@ export default {
 		};
 	},
 	methods: {
+		onChangePiano(){
+			self = this
+			this.overview.forEach((piano) => {
+				if (self.form.piano == piano.id){
+					console.log(piano.stanze)
+					self.stanzaOptions = piano.stanze.map((element) => {
+						return { "text": element["description"],
+								 "value": element["id"]}
+					})
+				}
+
+			})
+		},
 		onSubmit(){
 			console.log(this.form)
 		},

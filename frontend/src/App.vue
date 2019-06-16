@@ -21,7 +21,10 @@
 
 <style>
 body {
-  font-family: 'Inter';
+  font-family: 'Rubik';
   font-weight: 400
-}  
+}
+.h1 .h2 .h3 h1 h2 h3{
+  font-weight: 400
+}
 </style>}

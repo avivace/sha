@@ -8,7 +8,7 @@ import router from './router'
 Vue.use(BootstrapVue)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import 'typeface-inter'
+import 'typeface-rubik'
 Vue.prototype.$axios = axios.create();
 
 import App from './App.vue'

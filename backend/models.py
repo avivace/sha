@@ -142,7 +142,7 @@ class Notification(db.Model):
 
 class Piano(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    topic = db.Column(db.String(64), index=True, unique=True)
+    #topic = db.Column(db.String(64), index=True, unique=True)
     description = db.Column(db.String(120), index=False, unique=False)
     stanze = db.relationship('Stanza', backref='in_piano', lazy='dynamic')
 
@@ -151,7 +151,7 @@ class Piano(db.Model):
 
 class Stanza(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    topic = db.Column(db.String(64), index=True, unique=False)
+    #topic = db.Column(db.String(64), index=True, unique=False)
     description = db.Column(db.String(120), index=False, unique=False)
     piano_id = db.Column(db.Integer, db.ForeignKey('piano.id'))
     attuatori = db.relationship('Attuatore', backref='in_stanza', lazy='dynamic')
@@ -162,7 +162,7 @@ class Stanza(db.Model):
 
 class Attuatore(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    topic = db.Column(db.String(64), index=True, unique=False)
+    #topic = db.Column(db.String(64), index=True, unique=False)
     description = db.Column(db.String(120), index=False, unique=False)
     type = db.Column(db.String(64), index=False, unique=False)
     pin = db.Column(db.Integer, index=False, unique=True)

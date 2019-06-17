@@ -37,6 +37,23 @@ def decode_token(token):
     except JWTError as e:
         return "Unauthorized", 400
 
+def reset_password_request():
+    user = User.query.filter_by(email=form.email.data).first()
+    if user:
+        send_password_reset_email(user)
+        return "OK"
+    else
+        return "email not found", 500
+
+def reset_password(token):
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return "bad token", 400
+    user.set_password(form.password.data)
+    db.session.commit()
+    return "OK", 200
+
+
 # Main routes entry points
 
 def login():

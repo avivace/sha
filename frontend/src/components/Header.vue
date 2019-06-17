@@ -2,7 +2,7 @@
   <div>
 
     <b-navbar toggleable="lg" type="dark" variant="dark">
-    <b-navbar-brand href="#">Smart Home Automation  <b-spinner v-if="loading" type="grow" label="Loading..."></b-spinner></b-navbar-brand>
+    <b-navbar-brand href="#">Smart Home Automation</b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -17,15 +17,16 @@
         <b-nav-text v-if="isAuth">
           <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
         </b-nav-text>
-      </b-navbar-nav>
 
+      </b-navbar-nav>
+      <b-spinner style="color:white" v-if="loading" type="grow" label="Loading..."></b-spinner>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
 
 
         <b-nav-item-dropdown right v-if="isAuth">
           <!-- Using 'button-content' slot -->
-          <template slot="button-content"><em>User</em></template>
+          <template slot="button-content">{{username}}</template>
           <!--<b-dropdown-item href="#">Profile</b-dropdown-item>-->
           <b-dropdown-item href="#" @click="onLogout">Sign Out</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -45,7 +46,8 @@
     computed: {
       ...mapGetters('auth', {
         isAuth: 'isAuthenticated',
-        loading: 'isLoading'
+        loading: 'isLoading',
+        username: 'getUsername'
       })
     },
     methods: {

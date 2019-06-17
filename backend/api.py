@@ -137,7 +137,7 @@ def get_topics():
             for attuatore in attuatori:
                 topicObj = {}
                 topicObj['id'] = attuatore.id
-                topicObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
+                #topicObj['topic'] = piano.topic + '/' + stanza.topic + '/' + attuatore.topic
             topicArray.append(topicObj)
 
     return topicArray

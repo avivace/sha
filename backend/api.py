@@ -81,7 +81,7 @@ def add_device():
                        description=data["description"],
                        type=data["type"],
                        pin=data["pin"],
-                       stanza_id=data["stanza_id"],
+                       stanza_id=data["stanza"],
                        status=0)
     db.session.add(device)
     db.session.commit()

@@ -77,11 +77,12 @@
 					</div>
 				</template>
 			</template>
-
+			<div class="configButtons">
 			<b-button @click="modal = true">Aggiungi Dispositivo</b-button
 			>&nbsp;
 			<b-button @click="modalpiano = true">Aggiungi Piano</b-button>&nbsp;
 			<b-button @click="modalstanza = true">Aggiungi Camera</b-button>
+			</div>
 			<br />
 		</center>
 
@@ -334,3 +335,9 @@ export default {
 	}
 };
 </script>
+
+<style scoped="true">
+.configButtons .btn{
+	margin: 5px;
+}
+</style>

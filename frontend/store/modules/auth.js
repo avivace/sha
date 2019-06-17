@@ -4,7 +4,8 @@ import router from '@/router'
 const state = {
 	username: null,
 	token: null,
-	loading: false
+	loading: false,
+	status: null
 };
 
 const mutations = {
@@ -22,6 +23,9 @@ const mutations = {
 };
 
 const getters = {
+	authStatus(state) {
+		return state.status
+	},
 	isLoading(state) {
 		return state.loading
 	},
@@ -34,11 +38,13 @@ const getters = {
 };
 
 const actions = {
-	login: ({commit}, authData) => {
+	login: ({commit}, authData, state) => {
+
 		axios.post('http://localhost:8081/auth', {
 			username: authData.username,
 			password: authData.password,
 		}).then(response => {
+			
 			let success = response.data.success;
 
 			if (success === true) {
@@ -49,10 +55,15 @@ const actions = {
 			} 
 			else {
 				console.log('Login error');
+				localStorage.setItem('token', 'error');
 			}
+			
 		}).catch(error => {
+			localStorage.setItem('token', 'error');
 			console.log(error);
 		})
+		
+
 	},
 	autoLogin({commit}) {
 		let token = localStorage.getItem('token');

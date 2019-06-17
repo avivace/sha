@@ -35,7 +35,7 @@ def decode_token(token):
     try:
         return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
     except JWTError as e:
-        six.raise_from(Unauthorized, e)
+        return "Unauthorized", 400
 
 # Main routes entry points
 

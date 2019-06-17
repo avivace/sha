@@ -35,7 +35,7 @@ paths:
       security:
         - jwt: ['secret']
   /publish/{id}/{value}:
-    get:
+    post:
       summary: Publish
       operationId: api.mqtt_publish
       parameters:

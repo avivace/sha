@@ -314,7 +314,7 @@ export default {
 			// Send 0 to turn on, 1 to turn off
 			if (status) status = 0;
 			else status = 1;
-			axiosAuth.get("/publish/" + id + "/" + status).then(() => {
+			axiosAuth.post("/publish/" + id + "/" + status).then(() => {
 				this.getStatus();
 			});
 		},

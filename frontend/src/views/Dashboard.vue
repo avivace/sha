@@ -12,10 +12,13 @@
 							border-variant="light"
 							bg-variant="light"
 							text-variant="black"
-							:header="stanza.description"
+							
 							class="text-center"
 							align="center"
 						>
+						<div style="text-align: left" slot="header">
+						{{stanza.description}}
+						</div>
 							<b-card-text>
 								<b-card-group deck>
 									<template

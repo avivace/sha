@@ -28,6 +28,9 @@ const getters = {
 	isAuthenticated(state) {
 		return state.token !== null;
 	},
+	getUsername(state) {
+		return state.username;
+	}
 };
 
 const actions = {

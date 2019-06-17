@@ -32,6 +32,8 @@ paths:
       responses:
         '200':
           description: Response
+      security:
+        - jwt: ['secret']
   /publish/{id}/{value}:
     get:
       summary: Publish
@@ -52,6 +54,8 @@ paths:
       responses:
         '200':
           description: Response
+      security:
+        - jwt: ['secret']
   /overview:
     get:
       summary: Publish
@@ -59,6 +63,8 @@ paths:
       responses:
         '200':
           description: Response
+      security:
+        - jwt: ['secret']
   /add-device:
     post:
       summary: Add device
@@ -86,6 +92,8 @@ paths:
             'text/plain':
               schema:
                 type: string
+      security:
+        - jwt: ['secret']
   /add-stanza:
     post:
       summary: Add device
@@ -107,8 +115,8 @@ paths:
             'text/plain':
               schema:
                 type: string  
-#      security:
-#        - jwt: ['secret']
+      security:
+        - jwt: ['secret']
   /add-piano:
     post:
       summary: Add stanza
@@ -128,8 +136,8 @@ paths:
             'text/plain':
               schema:
                 type: string  
-#      security:
-#        - jwt: ['secret']
+      security:
+        - jwt: ['secret']
   /verify-token:
     get:
       summary: Return secret string

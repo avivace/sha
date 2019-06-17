@@ -1,5 +1,5 @@
 from flask import request
-from models import User, Post, Piano, Stanza, Attuatore, Sensore, Message, Notification, Pulsante, Riscaldamento
+from models import User, Piano, Stanza, Attuatore, Sensore, Notification, Pulsante, Riscaldamento
 import time
 from jose import JWTError, jwt
 from app import db
@@ -20,8 +20,6 @@ def _current_timestamp() -> int:
 
 
 # Auth
-
-
 def generate_token(username):
     timestamp = _current_timestamp()
     payload = {
@@ -62,13 +60,27 @@ def reset_password(token):
 # Main routes entry points
 
 
-def delete_object():
+def delete_object(objtype, id):
     data = request.get_json()
+    if objtype == 0:
+        obj = Attuatore.query.filter_by(id=id).first()
+    elif objtype == 1:
+        obj = Stanza.query.filter_by(id=id).first()
+    elif objtype == 2:
+        obj = Piano.query.filter_by(id=id).first()
+    db.session.delete(obj)
+    db.session.commit()
     return "OK"
 
 
 def update_device():
     data = request.get_json()
+    attuatore = Attuatore.query.filter_by(id=data["old_id"]).first()
+    attuatore.update(data["description"],
+                     data["type"],
+                     data["pin"],
+                     data["stanza"])
+    db.session.commit()
     return "OK"
 
 

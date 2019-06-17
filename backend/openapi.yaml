@@ -25,9 +25,76 @@ paths:
             'text/plain':
               schema:
                 type: string
+  /requestPasswordReset:
+    post:
+      summary: Return JWT token
+      operationId: api.reset_password_request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                username_mobile:
+                  type: string
+      responses:
+        '200':
+          description: JWT token
+          content:
+            'text/plain':
+              schema:
+                type: string
+  /resetPassword/{resetToken}:
+    post:
+      summary: Return JWT token
+      operationId: api.reset_password
+      parameters:
+        - name: resetToken
+          in: path
+          description: Reset token
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: JWT token
+          content:
+            'text/plain':
+              schema:
+                type: string
+  /delete/{type}/{id}:
+    delete:
+      summary: Elimina un'entità dalla configurazione del sistema.
+      operationId: api.delete_object
+      parameters:
+        - name: id
+          in: path
+          description: Reset token
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: path
+          description: Reset token
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Response
+      security:
+        - jwt: ['secret']
   /get-topics:
     get:
-      summary: Restituisce l'elenco di tutti i topic associati ad attuatori di tipo lampada
+      summary: Restituisce l'elenco di tutti i topic associati ad attuaturi del tipo specificato
       operationId: api.get_topics
       responses:
         '200':
@@ -65,6 +132,35 @@ paths:
           description: Response
       security:
         - jwt: ['secret']
+  /update-device:
+    put:
+      summary: Update device
+      operationId: api.update_device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                old-id:
+                  type: string
+                description:
+                  type: string
+                type:
+                  type: string
+                pin:
+                  type: number
+                stanza:
+                  type: number
+      responses:
+        '200':
+          description: Outcome
+          content:
+            'text/plain':
+              schema:
+                type: string
+      security:
+        - jwt: ['secret']
   /add-device:
     post:
       summary: Add device
@@ -75,15 +171,13 @@ paths:
           application/json:
             schema:
               properties:
-                topic:
-                  type: string
                 description:
                   type: string
                 type:
                   type: string
                 pin:
                   type: number
-                stanza_id:
+                stanza:
                   type: number
       responses:
         '200':

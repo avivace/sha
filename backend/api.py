@@ -13,11 +13,14 @@ JWT_ALGORITHM = 'HS256'
 client = mqttc.Client()
 client.connect("127.0.0.1", 1883, 60)
 
+
 # Utilities
 def _current_timestamp() -> int:
     return int(time.time())
 
+
 # Auth
+
 
 def generate_token(username):
     timestamp = _current_timestamp()
@@ -37,13 +40,15 @@ def decode_token(token):
     except JWTError as e:
         return "Unauthorized", 400
 
+
 def reset_password_request():
     user = User.query.filter_by(email=form.email.data).first()
     if user:
         send_password_reset_email(user)
         return "OK"
-    else
+    else:
         return "email not found", 500
+
 
 def reset_password(token):
     user = User.verify_reset_password_token(token)
@@ -55,6 +60,17 @@ def reset_password(token):
 
 
 # Main routes entry points
+
+
+def delete_object():
+    data = request.get_json()
+    return "OK"
+
+
+def update_device():
+    data = request.get_json()
+    return "OK"
+
 
 def login():
 
@@ -75,34 +91,38 @@ def get_secret(user, token_info) -> str:
     '''.format(
         user=user, token_info=token_info)
 
+
 def add_stanza():
     data = request.get_json()
-    stanza = Stanza(#topic="deprecated",
-                    description=data["description"],
-                    piano_id=data["piano_id"])
+    stanza = Stanza(  #topic="deprecated",
+        description=data["description"],
+        piano_id=data["piano_id"])
     db.session.add(stanza)
     db.session.commit()
     return "OK"
 
+
 def add_piano():
     data = request.get_json()
-    piano = Piano(#topic="deprecated",
-                  description=data["description"])
+    piano = Piano(  #topic="deprecated",
+        description=data["description"])
     db.session.add(piano)
     db.session.commit()
     return "OK"
 
+
 def add_device():
     data = request.get_json()
-    device = Attuatore(#topic="deprecated",
-                       description=data["description"],
-                       type=data["type"],
-                       pin=data["pin"],
-                       stanza_id=data["stanza"],
-                       status=0)
+    device = Attuatore(  #topic="deprecated",
+        description=data["description"],
+        type=data["type"],
+        pin=data["pin"],
+        stanza_id=data["stanza"],
+        status=0)
     db.session.add(device)
     db.session.commit()
     return "OK"
+
 
 def overview():
     piani = Piano.query.all()
@@ -148,9 +168,10 @@ def get_topics():
     for piano in piani:
         stanze = Stanza.query.filter_by(piano_id=piano.id).all()
         for stanza in stanze:
-        # Aggiungere elenco attuatori sia di tipo "lampada" che di tipo "serratura"
-        # Da vedere come costruire la query con operatore di OR
-            attuatori = Attuatore.query.filter_by(stanza_id=stanza.id, type='lampada')
+            # Aggiungere elenco attuatori sia di tipo "lampada" che di tipo "serratura"
+            # Da vedere come costruire la query con operatore di OR
+            attuatori = Attuatore.query.filter_by(
+                stanza_id=stanza.id, type='lampada')
             for attuatore in attuatori:
                 topicObj = {}
                 topicObj['id'] = attuatore.id
@@ -158,6 +179,7 @@ def get_topics():
             topicArray.append(topicObj)
 
     return topicArray
+
 
 def mqtt_publish(id, value):
     att = Attuatore.query.filter_by(id=id).first()

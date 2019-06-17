@@ -2,7 +2,8 @@
   <div>
 
     <b-navbar toggleable="lg" type="dark" variant="dark">
-    <b-navbar-brand href="#">Smart Home Automation</b-navbar-brand>
+    <b-navbar-brand href="#"><feather type="box"></feather>
+Smart Home Automation</b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -26,7 +27,9 @@
 
         <b-nav-item-dropdown right v-if="isAuth">
           <!-- Using 'button-content' slot -->
-          <template slot="button-content">{{username}}</template>
+          <template slot="button-content"><feather class="icon" type="user"></feather>
+
+{{username}}</template>
           <!--<b-dropdown-item href="#">Profile</b-dropdown-item>-->
           <b-dropdown-item href="#" @click="onLogout">Sign Out</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -57,3 +60,10 @@
     }
   }
 </script>
+
+<style scoped="true">
+.icon {
+  width: 25px;
+  vertical-align: -5px
+}
+</style>

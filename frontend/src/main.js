@@ -4,8 +4,10 @@ import BootstrapVue from 'bootstrap-vue'
 
 import store from '../store/index'
 import router from './router'
-
+import VueFeather from 'vue-feather';
 Vue.use(BootstrapVue)
+Vue.use(VueFeather);
+
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'typeface-rubik'

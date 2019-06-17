@@ -22,7 +22,7 @@ mosquitto_sub -h '127.0.0.1' -t '#'
 
 ### Backend
 
-Requirements: Python3. On Debian: `apt install python3`
+Requirements: Python3. On Debian: `apt install python3 python3-pip python3-venv`
 
 ```bash
 cd backend

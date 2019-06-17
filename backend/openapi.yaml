@@ -70,7 +70,7 @@ paths:
             'text/plain':
               schema:
                 type: string
-  /delete/{type}/{id}:
+  /delete/{objtype}/{id}:
     delete:
       summary: Elimina un'entità dalla configurazione del sistema.
       operationId: api.delete_object
@@ -81,7 +81,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: type
+        - name: objtype
           in: path
           description: Reset token
           required: true

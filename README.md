@@ -1,5 +1,7 @@
 # Smart Home Automation
 
+> A Rasberry Pi integrated domotic solution with MQTT. Supports sensors, actuators and thermostat. Controllable from a web application, smart speakers or a basic SMS interface.
+
 Design Lab project. 2018/2019. Marco Belotti, Francesco Bombarda, Antonio Vivace.
 
 ## Documentation

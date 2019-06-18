@@ -5,7 +5,7 @@ from models import User, hash_password
 from config import Config
 import requests
 import json
-	
+
 class UserCase(unittest.TestCase):
 
     # Test codifica password
@@ -219,8 +219,8 @@ class HomeConfigurationCase(unittest.TestCase):
         endpoint = "http://127.0.0.1:8081/add-device"
         data = {}
         data['description'] = "Lampadario"
-        data['pin'] = 1001
-        data['stanza_id'] = 1
+        data['pin'] = 26
+        data['stanza'] = 1
         data['topic'] = "luce" 
         data['type'] = "lampada"
         
@@ -253,8 +253,8 @@ class HomeConfigurationCase(unittest.TestCase):
         endpoint = "http://127.0.0.1:8081/add-device"
         data = {}
         data['description'] = "Lampadario"
-        data['pin'] = 1001 # Due dispositivi connessi allo stesso pin viola vincolo di chiave DB
-        data['stanza_id'] = 1
+        data['pin'] = 26 # Due dispositivi connessi allo stesso pin viola vincolo di chiave DB
+        data['stanza'] = 1
         data['topic'] = "luce" 
         data['type'] = "lampada"
         
@@ -320,7 +320,7 @@ class HomeConfigurationCase(unittest.TestCase):
         #print(response.json())
         self.assertEqual(response.status_code, 200)     
         
-        # Richiesta configurazione abitazione
+    # Richiesta cambio stato attuatore
     def test_richiesta_cambio_stato_attuatore(self):
         # Richiesta token di autenticazione
         endpoint = "http://127.0.0.1:8081/auth"
@@ -338,12 +338,12 @@ class HomeConfigurationCase(unittest.TestCase):
         token = response['token']
         
         #Richiesta cambio stato attuatore, garanzia di invio richiesta
-        endpoint = "http://127.0.0.1:8081/publish/1/1"
+        endpoint = "http://127.0.0.1:8081/publish/10/0"
         headers = {}
         headers['Accept'] = "text/plain"
         headers['Authorization'] = "Bearer " + token
 
-        response = requests.get(endpoint, headers=headers)
+        response = requests.post(endpoint, headers=headers)
         self.assertEqual(response.status_code, 200) 
         
 if __name__ == '__main__':

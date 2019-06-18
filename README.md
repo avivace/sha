@@ -15,7 +15,12 @@ Design Lab project. 2018/2019. Marco Belotti, Francesco Bombarda, Antonio Vivace
 - `/c8h18`: VueJS frontend
 - `/legacy-app`: old app, tests and miscellanea
 
+
 ## Screenshots
+
+Demo Video:
+
+[![Video Snapshot](docs/implementazione_source/videosnapshot.jpg)](https://giant.gfycat.com/PointedNarrowAfricanjacana.webm)
 
 Swagger UI:
 

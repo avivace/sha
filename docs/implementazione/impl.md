@@ -39,15 +39,29 @@ In particolare:
 
 Sono infine state create classi per poter sfruttare un mailer e gestire anche l'invio di email secondo template per notifiche e recupero dell'account.
 
+Applicazione web "Swagger UI", che documenta la nostra API, visualizzandone una descrizione completa e fornendo uno strumento per testare ogni rotta secondo i parametri definiti.
+
+È possibile anche procedere all'autenticazione JWT, di fatto permettendo l'utilizzo anche delle rotte protette (segnate con il lucchetto).
+
+![](ui1.png)
+
+Dettaglio di una singola rotta:
+
+![](ui2.png)
+
 ### API
 
 ### Panoramica degli strumenti
 
 #### MQTT
 
-TODO
+MQTT (MQ Telemetry Transport or Message Queue Telemetry Transport) è un protocollo ISO standard (ISO/IEC PRF 20922) di messaggistica leggero di tipo publish-subscribe posizionato in cima a TCP/IP. È stato progettato per le situazioni in cui è richiesto un basso impatto e dove la banda è limitata. Il pattern publish-subscribe richiede un message broker. Il broker è responsabile della distribuzione dei messaggi ai client destinatari. 
 
 - [ISO/IEC PRF 20922](https://webstore.iec.ch/preview/info_isoiec20922%7Bed1.0%7Den.pdf)
+
+Dall'applicazione web, usiamo Mosquitto per poter pubblicare i messaggi, mentre sul sistema, il pachetto "mqtt" permette di avviare un demone che fa subscribe sui topic specificati.
+
+RASPBERRY GPIO??
 
 #### JWT
 
@@ -101,6 +115,12 @@ Connexion è un "wrapper"
 
 È un ambiente completo per implementare delle applicazioni che espongono un API definita con standard OpenAPI. Fornisce un'interfaccia che autodocumenta le rotte descritte e permette di testarle ed utilizzarle durante lo sviluppo.
 
+La specifica delle rotte in OpenAPI 3 è in `openapi.yaml`.
+
+Ognuna delle rotte è legata ad un metodo che implementa effettivamente quell'azione (nel file `api.py`). Connexion si occupa di castare e passare a questo file i payload, i parametri, le informazioni contenute nelle URL templatizzate e le informazioni di autenticazioni che arrivano dal client che utilizza la nostra API.
+
+Vengono anche definite formalmente le risposte.
+
 Dato che ogni rotta è formalmente definita, e specifica che tipo di oggetti deve ricevere (Query param, URL templatizzate, JSON payloads), procede in autonomia alla loro valutazioni, sollevano opportune eccezioni in caso di fallito casting ai tipi desiderati, parametri mancanti o malformati, od in generale quando la richiesta non viene costruita come precedentemente definito.
 
 #### SQLite
@@ -133,7 +153,7 @@ In ogni caso, essa è completamente statica ed ottiene tutti i dati consumando c
 
 #### Webpack
 
-TODO
+Ci permette di usare varie librerie JavaScript ed in generale fornisce una serie di strumenti utili allo sviluppo.
 
 #### Vue.JS
 
@@ -141,11 +161,15 @@ TODO
 
 #### Axios
 
-TODO
+È la libreria che ci permette di costruire richieste HTTP per poter sfruttare la nostra API.
+
+Ci permette di aggiungere Query params, costruire JSON payloads da oggetti JS e autenticare ogni richiesta con la nostro Bearer Token (JWT). È asincrona e permette di specificare la azioni da intraprendere appena la richiesta è completa, anche in base all'esito della stessa.
+
+Questo ci permette di costruire in tempo reale il DOM del documento HTML, iniettando e rimuovendo i componenti che descrivono gli attuatori (VueJS), in base alle informazioni contenute nelle risposte delle richieste che facciamo con Axios.
 
 #### Bootstrap-Vue
 
-TODO
+Libreria CSS che ci fornisce una serie di stili e classi già fatte per la creazione di interfacce Web.
 
 ## Deploy del software
 
@@ -196,3 +220,9 @@ cd frontend
 npm install
 npm run serve
 ```
+
+## Specifica completa dell'API implementata
+
+<!-- markdown-swagger -->
+  Everything here will be replaced by markdown-swagger
+<!-- /markdown-swagger -->

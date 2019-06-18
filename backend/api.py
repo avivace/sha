@@ -99,6 +99,14 @@ def activate_user(user, token_info, user_id):
     # Check if user is an admin
     # If so, get the User with `user_id` and toggle is_active on it
     return "OK"
+    user = User.query.filter_by(id=user).first()
+    if user.is_admin:
+        user_to_activate = User.query.filter_by(id=user_id).first()
+        user_to_activate.is_active = True
+        db.session.commit()
+        return "OK", 200
+    else:
+        return "Unauthorized", 400
 
 def get_secret(user, token_info) -> str:
     return '''

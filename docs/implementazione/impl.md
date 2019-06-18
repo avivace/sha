@@ -48,6 +48,12 @@ In particolare:
 
 ## Panoramica degli strumenti
 
+#### MQTT
+
+TODO
+
+- [ISO/IEC PRF 20922](https://webstore.iec.ch/preview/info_isoiec20922%7Bed1.0%7Den.pdf)
+
 #### JWT
 
 TODO

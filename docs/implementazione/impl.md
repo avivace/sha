@@ -1,6 +1,17 @@
+---
+toc: true
+fontfamily: sourcesanspro
+toc-title: Indice
+include-before: '
+
 # Smart Home Automation - Implementazione
 
 > Marco Belotti, Francesco Bombarda, Antonio Vivace.
+
+'
+---
+
+## Introduzione
 
 Questo documento fornisce una panoramica del software realizzato per implementare le funzionalità del sistema SHA.
 
@@ -12,14 +23,12 @@ Particolare rilevanza è stata data al modo in cui ognuno dei diversi strumenti 
 
 Infine, verrà spiegato brevemente come preparare un sistema UNIX all'esecuzione di ognuna delle componenti del software stesso, preoccupandosi di soddisfare i prerequisiti, di installare automaticamente gli ambienti che provvedano a tutte le dipendenze ed infine eseguire ed esporre i servizi finali.
 
-## Funzionalità implementate
+# Funzionalità implementate
 
 Rispetto ai requisiti e all'architettura descritti negli altri documenti, abbiamo deciso di implementare un sotto insieme significativo di questi ultimi. In generale, sono state implementate le funzionalità che potessero permettere ai casi d'uso principali di funzionare.
 Il software fornisce un framework solido su cui, eventualmente, preparare e aggiungere le nuove caratteristiche, oppure espandere quelle esistenti.
 
 In particolare:
-
-## Backend
 
 - Tutte le funzionalità sono esposte come API Restful, definite formalmente con uno schema OpenAPI 3.
   + I parametri della richiesta e le risposte sono sempre validati formalmente con altrettanti schema.
@@ -39,19 +48,17 @@ In particolare:
 
 Sono infine state create classi per poter sfruttare un mailer e gestire anche l'invio di email secondo template per notifiche e recupero dell'account.
 
-Applicazione web "Swagger UI", che documenta la nostra API, visualizzandone una descrizione completa e fornendo uno strumento per testare ogni rotta secondo i parametri definiti.
+L'applicazione web "Swagger UI", documenta la nostra API, visualizzandone una descrizione completa e fornendo uno strumento per testare ogni rotta secondo i parametri definiti.
 
 È possibile anche procedere all'autenticazione JWT, di fatto permettendo l'utilizzo anche delle rotte protette (segnate con il lucchetto).
 
-![](ui1.png)
+![Applicazione web Swagger UI, documentazione dinamica dell'API esposta](ui1.png)
 
-Dettaglio di una singola rotta:
+![Dettaglio di una singola rotta](ui2.png)
 
-![](ui2.png)
+# Backend
 
-### API
-
-### Panoramica degli strumenti
+## Panoramica degli strumenti
 
 #### MQTT
 
@@ -68,10 +75,7 @@ installati nell'abitazione, attuando i comandi richiesti
 (accensione o spegnimento) sulla base delle richieste provenienti dagli strati 
 superiori dell'architettura e agendo direttamente sull'interfaccia GPIO.
 
-
-Interfaccia GPIO di Raspberry Pi:
-
-![](gpiorpi.jpg)
+![Interfaccia GPIO di Raspberry Pi](gpiorpi.jpg)
 
 #### JWT
 
@@ -143,7 +147,7 @@ SQLite è una libreria software scritta in linguaggio C che implementa un DBMS S
 
 SQLAlchemy ci permette di utilizzare un database SQLite e fa da ORM, fornendo utili metodi e classi per definire i modelli del database ed operarci, senza dover necessariamente scrivere query SQL.
 
-## Frontend
+# Frontend
 
 È un'applicazione in VueJS che implementa un'interfaccia utente facile ed immediata, implementando le funzionalità di controllo del sistema e di autenticazione sfruttando alcune delle rotte messe a disposizione dalla nostra API.
 
@@ -152,8 +156,12 @@ SQLAlchemy ci permette di utilizzare un database SQLite e fa da ORM, fornendo ut
 - Modifica di ogni punto luce del sistema,
 - Funzionante su qualsiasi dispositivo dotato di un browser web.
 - Possibilità di trasformarla facilmente in PWA con notifiche in tempo reale sul dispositivo, anche ad app web "chiusa".
- 
-### Panoramica degli strumenti
+
+![Landing page dell'applicazione web](frontend0.png)
+
+![Login sull'applicazione web](frontend1.png)
+
+## Panoramica degli strumenti
 
 #### Node.js
 
@@ -195,7 +203,9 @@ mqtt
 mosquitto_sub -h '127.0.0.1' -t '#'
 ```
 
-### Backend
+# Deploy
+
+## Backend
 
 Requisiti iniziali.
 
@@ -214,7 +224,7 @@ pip3 install connexion[swagger-ui]
 python3 app.py
 ```
 
-### Frontend
+## Frontend
 
 Installare i requisiti iniziali (Node.js ed npm).
 
@@ -230,13 +240,13 @@ npm install
 npm run serve
 ```
 
-## Testing
+# Testing
 
 Test dell'API implementata all'interno del file test.py, per maggiori dettagli consultare il documento di convalida.
 
 Per l'esecuzione dei casi di test, lanciare da terminale il comando `python3 test.py`
 
-## Specifica completa dell'API implementata
+# Specifica completa dell'API implementata
 
 
  Endpoint                      | Method | Auth? |

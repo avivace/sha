@@ -61,7 +61,17 @@ MQTT (MQ Telemetry Transport or Message Queue Telemetry Transport) è un protoco
 
 Dall'applicazione web, usiamo Mosquitto per poter pubblicare i messaggi, mentre sul sistema, il pachetto "mqtt" permette di avviare un demone che fa subscribe sui topic specificati.
 
-TODO: RASPBERRY GPIO??
+Nella nostra specifica implementazione, il dispositivo (Raspberry) predisposto 
+per il controllo dei dispositivi fisici (Attuatori e sensori), implementa un 
+client MQTT e si pone in ascolto di alcuni topic associati ai dispositivi 
+installati nell'abitazione, attuando i comandi richiesti 
+(accensione o spegnimento) sulla base delle richieste provenienti dagli strati 
+superiori dell'architettura e agendo direttamente sull'interfaccia GPIO.
+
+
+Interfaccia GPIO di Raspberry Pi:
+
+![](gpiorpi.jpg)
 
 #### JWT
 
@@ -152,19 +162,6 @@ Non è necessaria per eseguire la nostra applicazione frontend, che è completam
 
 In ogni caso, essa è completamente statica ed ottiene tutti i dati consumando con Axios l'API che abbiamo costruita.
 
-
-#### MQTT
-
-MQTT rappresenta un Protocollo di comunicazione di tipo publish/subscribe,
-particolarmente utilizzato in ambito Internet Of Things visto il ridotto
-utilizzo di risorse e di banda. 
-Nella nostra specifica implementazione, il dispositivo (Raspberry) predisposto 
-per il controllo dei dispositivi fisici (Attuatori e sensori), implementa un 
-client MQTT e si pone in ascolto di alcuni topic associati ai dispositivi 
-installati nell'abitazione, attuando i comandi richiesti 
-(accensione o spegnimento) sulla base delle richieste provenienti dagli strati 
-superiori dell'architettura e agendo direttamente sull'interfaccia GPIO.
-
 #### Webpack
 
 Ci permette di usare varie librerie JavaScript ed in generale fornisce una serie di strumenti utili allo sviluppo.
@@ -186,12 +183,6 @@ Questo ci permette di costruire in tempo reale il DOM del documento HTML, iniett
 #### Bootstrap-Vue
 
 Libreria CSS che ci fornisce una serie di stili e classi già fatte per la creazione di interfacce Web.
-
-#### Testing
-
-Test dell'API implementata all'interno del file test.py, per maggiori dettagli consultare il documento di convalida.
-
-Per l'esecuzione dei casi di test, lanciare da terminale il comando python3 test.py
 
 Requisiti iniziali, MQTT e Mosquitto.
 
@@ -238,6 +229,12 @@ cd frontend
 npm install
 npm run serve
 ```
+
+## Testing
+
+Test dell'API implementata all'interno del file test.py, per maggiori dettagli consultare il documento di convalida.
+
+Per l'esecuzione dei casi di test, lanciare da terminale il comando `python3 test.py`
 
 ## Specifica completa dell'API implementata
 

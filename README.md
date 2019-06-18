@@ -23,7 +23,7 @@ mosquitto_sub -h '127.0.0.1' -t '#'
 ### Client MQTT gestione illuminazione
 
 ```bash
-python3 gestioneLuci.py
+python gestioneLuci.py
 ```
 
 ### Backend

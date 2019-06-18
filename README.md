@@ -60,6 +60,3 @@ cd frontend
 npm install
 npm run serve
 ```
-=======
-- [Implementazione]()
->>>>>>> dcf45b76cf3786258c4e85ed1a8655bd974b33c9

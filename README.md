@@ -20,6 +20,12 @@ mqtt
 mosquitto_sub -h '127.0.0.1' -t '#'
 ```
 
+### Client MQTT gestione illuminazione
+
+```bash
+python3 gestioneLuci.py
+```
+
 ### Backend
 
 Requirements: Python3. On Debian: `apt install python3 python3-pip python3-venv`

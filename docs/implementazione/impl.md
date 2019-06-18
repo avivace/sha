@@ -23,6 +23,8 @@ Particolare rilevanza è stata data al modo in cui ognuno dei diversi strumenti 
 
 Infine, verrà spiegato brevemente come preparare un sistema UNIX all'esecuzione di ognuna delle componenti del software stesso, preoccupandosi di soddisfare i prerequisiti, di installare automaticamente gli ambienti che provvedano a tutte le dipendenze ed infine eseguire ed esporre i servizi finali.
 
+Tutti i software utilizzati sono open source e rilasciati con licenze libere.
+
 # Funzionalità implementate
 
 Rispetto ai requisiti e all'architettura descritti negli altri documenti, abbiamo deciso di implementare un sotto insieme significativo di questi ultimi. In generale, sono state implementate le funzionalità che potessero permettere ai casi d'uso principali di funzionare.
@@ -35,6 +37,7 @@ In particolare:
   + Tutte le risposte serializzate in JSON.
   + L'API è agnostica e sfruttabile da qualsiasi libreria o ambiente di sviluppo dotato di un client HTTP.
   + Viene generata una documentazione dinamica di ognuna delle funzionalità esposte dall'API, mostrando come utilizzare e cosa aspettarsi da ognuna delle funzionalità.
+  + Secondo le linee guida per le API RESTful, vengono utilizzati i metodi HTTP adeguati al tipo di operazione. Se essa è stateless e non modifica il sistema (idempontenti e *safe*) è una `GET`. Se aggiorna un oggetto esistente vengono utilizzate le `PUT` mentre se ne vengono creati di nuovi `POST`.
 - Esposizione dello stato dei punti luce e modifica degli stessi tramite MQTT.
 - Sistema di autenticazione completo basato su JWT. Permette:
   + login, 
@@ -46,17 +49,44 @@ In particolare:
 - Diversi livelli di utenza.
 - L'intero stato della configurazione è in un database SQLite di cui si possono facilmente fare snapshot periodici, esportarli ed importarli.
 
-Sono infine state create classi per poter sfruttare un mailer e gestire anche l'invio di email secondo template per notifiche e recupero dell'account.
+Sono state create classi per poter sfruttare un mailer e gestire anche l'invio di email secondo template per notifiche e recupero dell'account.
 
-L'applicazione web "Swagger UI", documenta la nostra API, visualizzandone una descrizione completa e fornendo uno strumento per testare ogni rotta secondo i parametri definiti.
+L'applicazione web "Swagger UI" fornita con Connexion, documenta la nostra API, visualizzandone una descrizione completa e fornendo uno strumento per testare ogni rotta secondo i parametri definiti.
 
-È possibile anche procedere all'autenticazione JWT, di fatto permettendo l'utilizzo anche delle rotte protette (segnate con il lucchetto).
+È possibile anche procedere all'autenticazione JWT durante il testing delle rotte, di fatto permettendo l'utilizzo anche delle rotte protette (segnate con il lucchetto).
+
+Il frontend, un applicazione reattiva scritta in VueJS, responsive ed utilizzabile su qualsiasi dispositivo dotato di browser web, sfrutta alcuni di questi metodi, fornisce un'implementazione base di UI espandibile facilmente:
+
+- Login/logout
+- Autenticazione di ogni richiesta successiva
+- Visuale riassuntiva del sistema
+- Aggiunta stanza
+- Aggiunta piano
+- Aggiunta dispositivo
+- Recupera password
+- Registrazione utente
+
+Il sistema di autenticazione è stato realizzato da zero sfruttando JWT per verificare i claim ed autenticare le singole richieste.
+
+Viene impostato un valore di *salt* uguale sul frontend e sul backend (environment variable). Ogni password viene concatenata a questo salt e ne viene prodotto un hash con SHA5. Solo a quel punto viene salvata e/o confrontata con il valore corretto (server side).
+Se questo va a buon fine, viene rilasciato un token firmato che conferma la rivendicazione sull'utente.
+
+Un token vale solo per la sessione in corso ed è possibile personalizzare la sua validità temporale.
+
+## Istanza di test
+
+Un'istanza di test è pubblica a questo indirizzo:
+
+- [`http://188.166.124.245:8080`](http://188.166.124.245:8080) (Frontend)
+- [`http://188.166.124.245:8081/ui`](http://188.166.124.245:8081/ui) (Documentazione API)
+
+
+# Backend
 
 ![Applicazione web Swagger UI, documentazione dinamica dell'API esposta](ui1.png)
 
 ![Dettaglio di una singola rotta](ui2.png)
 
-# Backend
 
 ## Panoramica degli strumenti
 
@@ -161,6 +191,12 @@ SQLAlchemy ci permette di utilizzare un database SQLite e fa da ORM, fornendo ut
 
 ![Login sull'applicazione web](frontend1.png)
 
+![Aggiunta di un dispositivo alla configurazione](frontend2.png)
+
+![Aggiunta di una stanza alla configurazione](frontend3.png)
+
+![Panoramica sul sistema. Da questa visuale è possibile operare su ogni attuatore](frontend4.png)
+
 ## Panoramica degli strumenti
 
 #### Node.js
@@ -176,7 +212,9 @@ Ci permette di usare varie librerie JavaScript ed in generale fornisce una serie
 
 #### Vue.JS
 
-TODO
+Vue.js è un framework JavaScript, dedicato alla realizzazione di interfacce web reattive che sfruttano il dual-binding tra modello dati e vista. Ciò significa che rende possibile implementare un’applicazione ragionando in termini di dati, variabili e oggetti, astraendosi rispetto all’implementazione e aggiornamento del DOM della pagina.
+
+Vue-router viene utilizzato per gestire il routing e i redirezionamenti una volta autenticati.
 
 L'applicazione frontend viene avviata con `npm run serve` ed è disponibile a `localhost:8081`.
 
@@ -190,7 +228,10 @@ Questo ci permette di costruire in tempo reale il DOM del documento HTML, iniett
 
 #### Bootstrap-Vue
 
-Libreria CSS che ci fornisce una serie di stili e classi già fatte per la creazione di interfacce Web.
+Libreria CSS che ci fornisce una serie di stili, palette e classi per la creazione di interfacce Web moderne e responsive. Ognuno di questi componenti UI espone a sua volta un'interfaccia da cui è possibile modificarne le proprietà in base alla logica client side.
+
+
+# Deploy
 
 Requisiti iniziali, MQTT e Mosquitto.
 
@@ -203,7 +244,11 @@ mqtt
 mosquitto_sub -h '127.0.0.1' -t '#'
 ```
 
-# Deploy
+Client MQTT gestione illuminazione
+```
+python gestioneLuci.py
+```
+
 
 ## Backend
 
@@ -246,7 +291,7 @@ Test dell'API implementata all'interno del file test.py, per maggiori dettagli c
 
 Per l'esecuzione dei casi di test, lanciare da terminale il comando `python3 test.py`
 
-# Specifica completa dell'API implementata
+# Appendice: specifica completa dell'API implementata
 
 
  Endpoint                      | Method | Auth? |

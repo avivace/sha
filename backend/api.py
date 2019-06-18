@@ -95,6 +95,10 @@ def login():
     else:
         return {"success": True, "token": generate_token(data["username"])}
 
+def activate_user(user, token_info, user_id):
+    # Check if user is an admin
+    # If so, get the User with `user_id` and toggle is_active on it
+    return "OK"
 
 def get_secret(user, token_info) -> str:
     return '''

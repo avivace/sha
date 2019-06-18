@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Smart Home Automation
   version: '1.0'
-  description: Documentazione dell'API esposta dal backend di SHA. Progetto di Laboratorio di Progettazione. Marco Belotti, Francesco Bombarda, Antonio Vivace.
+  description: Documentazione e specifica OpenAPI 3 dell'API esposta da SHA.
 paths:
   /auth:
     post:
@@ -144,6 +144,28 @@ paths:
       responses:
         '200':
           description: Response
+      security:
+        - jwt: ['secret']
+  /activate-user/{user_id}:
+    put:
+      tags:
+        - Account
+      summary: Attiva l'account specificato (da utente amministratore)
+      parameters:
+        - name: user_id
+          in: path
+          description: ID dell'utente da attivare
+          required: true
+          schema:
+            type: string
+      operationId: api.activate_user
+      responses:
+        '200':
+          description: Esito
+          content:
+            'text/plain':
+              schema:
+                type: string
       security:
         - jwt: ['secret']
   /update-device:

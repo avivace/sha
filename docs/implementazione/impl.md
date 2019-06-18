@@ -99,9 +99,10 @@ TODO
 
 TODO
 
-#### Testing(?)
+#### Testing
 
-TODO
+Test dell'API implementata all'interno del file test.py, per maggiori dettagli consultare il documento di convalida.
+Per l'esecuzione dei casi di test, lanciare da terminale il comando python3 test.py
 
 
 ## Deploy del software

@@ -2,12 +2,14 @@ openapi: 3.0.0
 info:
   title: Smart Home Automation
   version: '1.0'
-  description: Documentazione dell'API esposta dal backend di SHA. Progetto di Laboratorio di Progettazione. Marco Belotti, Francesco Bombarda, Antonio Vivace.
+  description: Documentazione e specifica OpenAPI 3 dell'API esposta da SHA.
 paths:
   /auth:
     post:
-      summary: Return JWT token
+      summary: Autentica l'utente con le credenziali fornite, fornendo un JWT token
       operationId: api.login
+      tags:
+        - Autenticazione
       requestBody:
         required: true
         content:
@@ -27,8 +29,10 @@ paths:
                 type: string
   /requestPasswordReset:
     post:
-      summary: Return JWT token
+      summary: Richiedi il ripristino delle credenziali per l'utente con la mail o cellulare forniti
       operationId: api.reset_password_request
+      tags:
+        - Account
       requestBody:
         required: true
         content:
@@ -39,15 +43,17 @@ paths:
                   type: string
       responses:
         '200':
-          description: JWT token
+          description: Esito
           content:
             'text/plain':
               schema:
                 type: string
   /resetPassword/{resetToken}:
     post:
-      summary: Return JWT token
+      summary: Consuma il token per ripristinare la password
       operationId: api.reset_password
+      tags:
+        - Account
       parameters:
         - name: resetToken
           in: path
@@ -65,25 +71,27 @@ paths:
                   type: string
       responses:
         '200':
-          description: JWT token
+          description: Esito
           content:
             'text/plain':
               schema:
                 type: string
   /delete/{objtype}/{id}:
     delete:
-      summary: Elimina un'entità dalla configurazione del sistema.
+      summary: Elimina un'entità (Piano, Stanza o Attuatore) dalla configurazione del sistema
       operationId: api.delete_object
+      tags:
+        - Sistema
       parameters:
         - name: id
           in: path
-          description: Reset token
+          description: ID
           required: true
           schema:
             type: string
         - name: objtype
           in: path
-          description: Reset token
+          description: Tipo
           required: true
           schema:
             type: string
@@ -94,6 +102,8 @@ paths:
         - jwt: ['secret']
   /get-topics:
     get:
+      tags:
+        - Sistema
       summary: Restituisce l'elenco di tutti i topic associati ad attuaturi del tipo specificato
       operationId: api.get_topics
       responses:
@@ -103,38 +113,66 @@ paths:
         - jwt: ['secret']
   /publish/{id}/{value}:
     post:
-      summary: Publish
+      summary: Pubblica il valore specificato sul topic MQTT corrispondente all'ID fornito 
       operationId: api.mqtt_publish
+      tags:
+        - Sistema
       parameters:
         - name: id
           in: path
-          description: User ID
+          description: ID attuatore
           required: true
           schema:
             type: string
         - name: value
           in: path
-          description: User ID
+          description: Valore
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Response
+          description: Esito
       security:
         - jwt: ['secret']
   /overview:
     get:
-      summary: Publish
+      tags:
+        - Sistema
+      summary: Ottieni una serializzazione JSON completa della configurazione del sistema in ogni sua parte
       operationId: api.overview
       responses:
         '200':
           description: Response
       security:
         - jwt: ['secret']
+  /activate-user/{user_id}:
+    put:
+      tags:
+        - Account
+      summary: Attiva l'account specificato (da utente amministratore)
+      parameters:
+        - name: user_id
+          in: path
+          description: ID dell'utente da attivare
+          required: true
+          schema:
+            type: string
+      operationId: api.activate_user
+      responses:
+        '200':
+          description: Esito
+          content:
+            'text/plain':
+              schema:
+                type: string
+      security:
+        - jwt: ['secret']
   /update-device:
     put:
-      summary: Update device
+      tags:
+        - Sistema
+      summary: Modifica i dettagli di un attuatore
       operationId: api.update_device
       requestBody:
         required: true
@@ -163,7 +201,9 @@ paths:
         - jwt: ['secret']
   /add-device:
     post:
-      summary: Add device
+      tags:
+        - Sistema
+      summary: Aggiungi un attuatore alla configurazione di sistema
       operationId: api.add_device
       requestBody:
         required: true
@@ -190,7 +230,9 @@ paths:
         - jwt: ['secret']
   /add-stanza:
     post:
-      summary: Add device
+      tags:
+        - Sistema
+      summary: Aggiungi una stanza alla configurazione di sistema
       operationId: api.add_stanza
       requestBody:
         required: true
@@ -204,7 +246,7 @@ paths:
                   type: string
       responses:
         '200':
-          description: Outcome
+          description: Esito
           content:
             'text/plain':
               schema:
@@ -213,7 +255,9 @@ paths:
         - jwt: ['secret']
   /add-piano:
     post:
-      summary: Add stanza
+      tags:
+        - Sistema
+      summary: Aggiungi un piano alla configurazione di sistema
       operationId: api.add_piano
       requestBody:
         required: true
@@ -225,7 +269,7 @@ paths:
                   type: string
       responses:
         '200':
-          description: Outcome
+          description: Esito
           content:
             'text/plain':
               schema:
@@ -234,7 +278,9 @@ paths:
         - jwt: ['secret']
   /verify-token:
     get:
-      summary: Return secret string
+      tags:
+        - Autenticazione
+      summary: Verifica la validità del token fornito, restituendo dettagli sull'utente per cui questo claim è valido
       operationId: api.get_secret
       responses:
         '200':

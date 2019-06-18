@@ -6,6 +6,7 @@ Design Lab project. 2018/2019. Marco Belotti, Francesco Bombarda, Antonio Vivace
 
 - [Requisiti]()
 - [Architettura]()
+<<<<<<< HEAD
 - [Implementazione]()
 
 ## Deploy
@@ -60,3 +61,6 @@ cd frontend
 npm install
 npm run serve
 ```
+=======
+- [Implementazione]()
+>>>>>>> dcf45b76cf3786258c4e85ed1a8655bd974b33c9

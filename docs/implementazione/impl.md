@@ -88,13 +88,12 @@ TODO
 MQTT rappresenta un Protocollo di comunicazione di tipo publish/subscribe,
 particolarmente utilizzato in ambito Internet Of Things visto il ridotto
 utilizzo di risorse e di banda. 
-Si pone al di sopra del protocollo TCP. 
 Nella nostra specifica implementazione, il dispositivo (Raspberry) predisposto 
 per il controllo dei dispositivi fisici (Attuatori e sensori), implementa un 
 client MQTT e si pone in ascolto di alcuni topic associati ai dispositivi 
 installati nell'abitazione, attuando i comandi richiesti 
 (accensione o spegnimento) sulla base delle richieste provenienti dagli strati 
-superiori dell'architettura.
+superiori dell'architettura e agendo direttamente sull'interfaccia GPIO.
 
 #### Webpack
 

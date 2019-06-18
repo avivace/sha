@@ -2,7 +2,6 @@
 *.aux
 *.log
 *.toc
-*.pdf
 
 # Python3 Virtual Environment folders
 bin/

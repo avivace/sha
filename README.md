@@ -22,7 +22,7 @@ Design Lab project. 2018/2019. Marco Belotti, Francesco Bombarda, Antonio Vivace
 
 Demo Video:
 
-[![Video Snapshot](docs/implementazione_source/videosnapshot.jpg)](https://giant.gfycat.com/PointedNarrowAfricanjacana.webm)
+[![Video Snapshot](docs/implementazione_source/videosnapshot.jpg)](docs/implementazione_source/demo.webm)
 
 Swagger UI:
 

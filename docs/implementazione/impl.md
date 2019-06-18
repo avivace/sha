@@ -61,7 +61,7 @@ MQTT (MQ Telemetry Transport or Message Queue Telemetry Transport) è un protoco
 
 Dall'applicazione web, usiamo Mosquitto per poter pubblicare i messaggi, mentre sul sistema, il pachetto "mqtt" permette di avviare un demone che fa subscribe sui topic specificati.
 
-RASPBERRY GPIO??
+TODO: RASPBERRY GPIO??
 
 #### JWT
 
@@ -111,7 +111,7 @@ Flask è un microframework perché ha un nucleo semplice ma estensibile. Non c'�
 
 #### Connexion
 
-Connexion è un "wrapper"
+Connexion funziona come "wrapper" dell'applicazione Flask, estendendola.
 
 È un ambiente completo per implementare delle applicazioni che espongono un API definita con standard OpenAPI. Fornisce un'interfaccia che autodocumenta le rotte descritte e permette di testarle ed utilizzarle durante lo sviluppo.
 
@@ -122,6 +122,8 @@ Ognuna delle rotte è legata ad un metodo che implementa effettivamente quell'az
 Vengono anche definite formalmente le risposte.
 
 Dato che ogni rotta è formalmente definita, e specifica che tipo di oggetti deve ricevere (Query param, URL templatizzate, JSON payloads), procede in autonomia alla loro valutazioni, sollevano opportune eccezioni in caso di fallito casting ai tipi desiderati, parametri mancanti o malformati, od in generale quando la richiesta non viene costruita come precedentemente definito.
+
+Una volta avviato, su `localhost:8080` viene esposta l'API, mentre su `localhost:8080/ui` è visualizzaible l'applicazione web Swagger UI che documenta le rotte.
 
 #### SQLite
 
@@ -158,6 +160,8 @@ Ci permette di usare varie librerie JavaScript ed in generale fornisce una serie
 #### Vue.JS
 
 TODO
+
+L'applicazione frontend viene avviata con `npm run serve` ed è disponibile a `localhost:8081`.
 
 #### Axios
 

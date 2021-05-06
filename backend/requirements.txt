@@ -9,7 +9,7 @@ connexion==2.2.0
 cryptography==2.7
 ecdsa==0.13.3
 Flask==1.0.3
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 Flask-Migrate==2.5.2
 Flask-SQLAlchemy==2.4.0
 future==0.17.1
